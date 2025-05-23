@@ -6,7 +6,7 @@ import requests
 
 app = Flask(__name__)
 
-SERVER_URL = 'http://192.168.1.53:6000' 
+SERVER_URL = 'http://192.168.1.53:5001' 
 
 @app.route('/')
 def index():
