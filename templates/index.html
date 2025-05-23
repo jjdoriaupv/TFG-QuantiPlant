@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TFG QuantiPlant</title>
+</head>
+<body>
+  <h1>Control de cámara y LED</h1>
+
+  <button onclick="window.location.href='/foto'">Tomar foto</button>
+  <button onclick="window.location.href='/mostrar'">Mostrar texto en LED</button>
+
+  {% if photo %}
+    <h2>Foto tomada:</h2>
+    <img src="{{ photo }}" width="300">
+  {% endif %}
+
+  {% if led %}
+    <p>{{ led }}</p>
+  {% endif %}
+
+  {% if error %}
+    <p style="color:red">{{ error }}</p>
+  {% endif %}
+</body>
+</html>
