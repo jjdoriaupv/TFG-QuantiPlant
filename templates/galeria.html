@@ -11,16 +11,12 @@
     <div class="grid">
       {% for image in images %}
         <div class="grid-item">
-            <img src="{{ server_url }}/uploads/{{ image }}" alt="{{ image }}" onclick="window.open('{{ server_url }}/uploads/{{ image }}','_blank')">
-        
-            <div style="margin-top: 5px;">
-            <a class="button" href="{{ server_url }}/uploads/{{ image }}" download>⬇ Descargar</a>
-            </div>
-        
-            <form action="/eliminar/{{ image }}" method="post">
+          <img src="{{ server_url }}/uploads/{{ image }}" alt="{{ image }}" onclick="window.open('{{ server_url }}/uploads/{{ image }}','_blank')">
+          <form action="/eliminar/{{ image }}" method="post">
             <button type="submit">&times;</button>
-            </form>
-        </div>      
+          </form>
+          <a class="button" href="{{ server_url }}/download/{{ image }}">⬇ Descargar</a>
+        </div>
       {% endfor %}
     </div>
     <br>
