@@ -15,7 +15,7 @@ def take_photo():
 
         with open(local_path, 'rb') as f:
             files = {'image': (f"photo_{timestamp}.jpg", f, 'image/jpeg')}
-            response = requests.post("http://192.168.1.53:6000/upload", files=files)
+            response = requests.post("http://192.168.1.53:5001/upload", files=files)
             if response.status_code == 200:
                 print(f"[UPLOAD] Foto enviada correctamente")
             else:
