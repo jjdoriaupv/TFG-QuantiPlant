@@ -40,13 +40,6 @@ def config():
     config = get_config()
     return render_template('config.html', config=config)
 
-@app.route('/download/<filename>')
-def download_file(filename):
-    path = os.path.join(UPLOAD_FOLDER, filename)
-    if os.path.exists(path):
-        return send_file(path, as_attachment=True)
-    return 'Not Found', 404
-
 @app.route('/galeria')
 def galeria():
     try:
