@@ -9,9 +9,22 @@
   <div class="container">
     <h1>TFG - QuantiPlant</h1>
 
-    <form action="/foto" method="get" style="display:inline;">
-      <button class="button" type="submit">📸 Tomar Foto</button>
-    </form>    
+    <button class="button" onclick="tomarFoto()">📸 Tomar Foto</button>
+    <script>
+      function tomarFoto() {
+        fetch('/foto', { method: 'POST' })
+          .then(response => {
+            if (response.ok) {
+              alert("📸 Foto tomada correctamente");
+            } else {
+              alert("❌ Error al tomar la foto");
+            }
+          })
+          .catch(() => {
+            alert("⚠️ No se pudo conectar al servidor");
+          });
+      }
+    </script>
     <button class="button" onclick="window.location.href='/mostrar'">💡 Encender LED</button>
     <a href="/config" class="button">⚙️ Configurar captura automática</a>
     <a href="/galeria" class="button">🖼 Ver Galería</a>

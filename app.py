@@ -12,13 +12,14 @@ SERVER_URL = 'http://192.168.1.53:5001'
 def index():
     return render_template('index.html')
 
-@app.route('/foto')
+@app.route('/foto', methods=['POST'])
 def foto():
     filename = take_photo()
     if filename:
-        return render_template('index.html', photo=filename)
+        return 'OK', 200
     else:
-        return render_template('index.html', error="No se pudo tomar la foto")
+        return 'Error al tomar la foto', 500
+
 
 @app.route('/mostrar')
 def mostrar():
