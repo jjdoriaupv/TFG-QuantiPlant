@@ -1,1 +1,22 @@
 /.vscode
+
+# Entorno virtual de Python
+venv/
+ENV/
+env/
+
+# Archivos de configuración de VS Code
+.vscode/
+
+# Archivos generados por la cámara (fotos)
+static/*.jpg
+static/*.png
+
+# Archivos del sistema
+__pycache__/
+*.pyc
+*.pyo
+
+# Otros
+.DS_Store
+Thumbs.db
