@@ -1,26 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>TFG QuantiPlant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>Control de cámara y LED</h1>
+  <div class="container">
+    <h1>TFG - QuantiPlant</h1>
 
-  <button onclick="window.location.href='/foto'">Tomar foto</button>
-  <button onclick="window.location.href='/mostrar'">Mostrar texto en LED</button>
+    <button class="button" onclick="window.location.href='/foto'">📸 Tomar Foto</button>
+    <button class="button" onclick="window.location.href='/mostrar'">💡 Encender LED</button>
 
-  {% if photo %}
-    <h2>Foto tomada:</h2>
-    <img src="{{ photo }}" width="300">
-  {% endif %}
+    {% if photo %}
+      <div class="message">Foto tomada:</div>
+      <img src="{{ photo }}" alt="Foto tomada">
+    {% endif %}
 
-  {% if led %}
-    <p>{{ led }}</p>
-  {% endif %}
+    {% if led %}
+      <div class="message">{{ led }}</div>
+    {% endif %}
 
-  {% if error %}
-    <p style="color:red">{{ error }}</p>
-  {% endif %}
+    {% if error %}
+      <div class="message" style="color: red;">{{ error }}</div>
+    {% endif %}
+  </div>
 </body>
 </html>
+
