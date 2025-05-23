@@ -78,4 +78,44 @@ body {
     text-decoration: none;
     display: inline-block;
   }
+
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .grid-item {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .grid-item img {
+    width: 200px;
+    height: auto;
+    cursor: pointer;
+    display: block;
+  }
+  
+  .grid-item form {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+  
+  .grid-item button {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
   

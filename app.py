@@ -2,8 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for
 from camera import take_photo
 from led_display import send_text_to_led
 from auto_capture import start_auto_capture, enable_capture, set_interval, get_config
+import requests
 
 app = Flask(__name__)
+
+SERVER_URL = 'http://192.168.1.53:6000' 
 
 @app.route('/')
 def index():
@@ -37,7 +40,31 @@ def config():
     config = get_config()
     return render_template('config.html', config=config)
 
+@app.route('/galeria')
+def galeria():
+    try:
+        res = requests.get(f'{SERVER_URL}/list')
+        if res.status_code == 200:
+            images = res.json()
+        else:
+            images = []
+    except Exception as e:
+        print(f"Error al obtener lista de imágenes: {e}")
+        images = []
+
+    return render_template('galeria.html', images=images, server_url=SERVER_URL)
+
+@app.route('/eliminar/<filename>', methods=['POST'])
+def eliminar(filename):
+    try:
+        res = requests.delete(f'{SERVER_URL}/uploads/{filename}')
+        print(f"Eliminando {filename}: {res.status_code}")
+    except Exception as e:
+        print(f"Error al eliminar imagen: {e}")
+    return redirect(url_for('galeria'))
+
 if __name__ == '__main__':
     start_auto_capture()
     app.run(host='0.0.0.0', port=5000)
+
 

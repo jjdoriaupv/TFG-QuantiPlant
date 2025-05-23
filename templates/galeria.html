@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Galería Remota</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Galería Remota</h1>
+    <div class="grid">
+      {% for image in images %}
+        <div class="grid-item">
+          <img src="{{ server_url }}/uploads/{{ image }}" alt="{{ image }}" onclick="window.open('{{ server_url }}/uploads/{{ image }}','_blank')">
+          <form action="/eliminar/{{ image }}" method="post">
+            <button type="submit">&times;</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+    <br>
+    <a href="/" class="button">← Volver al inicio</a>
+  </div>
+</body>
+</html>
+
