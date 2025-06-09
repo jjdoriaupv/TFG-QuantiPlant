@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Galería Global</title>
-  <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>QuantiPlant - Panel Principal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>Galería de Fotos - Todas las Raspberries</h1>
-    <div class="grid">
-      {% for rpi, filename in images %}
-        <div class="grid-item">
-          <img src="/uploads/{{ rpi }}/{{ filename }}" alt="{{ filename }}" onclick="window.open('/uploads/{{ rpi }}/{{ filename }}','_blank')">
-          <a class="button" href="/download/{{ rpi }}/{{ filename }}">⬇ Descargar</a>
-          <form action="/delete/{{ rpi }}/{{ filename }}" method="post">
-            <button type="submit">🗑</button>
-          </form>
-        </div>
-      {% endfor %}
+    <div class="container">
+        <h1>QuantiPlant - Panel de Control</h1>
+
+        <h2>Dispositivos conectados</h2>
+        {% for device in devices %}
+            <div class="device">
+                <h3>{{ device }}</h3>
+                <form method="POST" action="{{ url_for('take_photo', device_id=device) }}">
+                    <button class="button" type="submit">📸 Tomar Foto</button>
+                </form>
+                <a class="button" href="{{ url_for('config', device_id=device) }}">⚙️ Configurar</a>
+            </div>
+        {% endfor %}
+
+        <a class="button" href="{{ url_for('galeria') }}">🖼️ Ver Galería</a>
     </div>
-  </div>
 </body>
 </html>

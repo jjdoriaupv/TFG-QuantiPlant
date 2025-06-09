@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Galería</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        .grid-item {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 200px;
+            background: white;
+        }
+        .grid-item img {
+            width: 100%;
+            height: auto;
+        }
+        .grid-item form {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Galería de Imágenes</h1>
+        <div class="grid">
+            {% for image in images %}
+            <div class="grid-item">
+                <a href="{{ server_url }}/uploads/{{ image }}" target="_blank">
+                    <img src="{{ server_url }}/uploads/{{ image }}" alt="{{ image }}">
+                </a>
+                <form action="{{ url_for('eliminar', filename=image) }}" method="POST">
+                    <button class="button" type="submit">🗑️ Eliminar</button>
+                </form>
+                <a class="button" href="{{ server_url }}/download/{{ image }}">⬇️ Descargar</a>
+            </div>
+            {% endfor %}
+        </div>
+        <br>
+        <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
+    </div>
+</body>
+</html>

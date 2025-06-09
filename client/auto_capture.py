@@ -4,7 +4,7 @@ from camera import take_photo
 
 config = {
     'enabled': False,
-    'interval': 10  # en segundos
+    'interval': 10
 }
 
 def loop():

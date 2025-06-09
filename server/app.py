@@ -1,54 +1,80 @@
-from flask import Flask, request, send_from_directory, send_file, jsonify, render_template
-from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
+import requests
+import json
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+RASPBERRIES_FILE = 'raspberries.json'
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+def get_raspberry_list():
+    with open(RASPBERRIES_FILE) as f:
+        return json.load(f)
 
 @app.route('/')
 def index():
-    folders = sorted(os.listdir(UPLOAD_FOLDER))
-    all_images = []
-    for folder in folders:
-        folder_path = os.path.join(UPLOAD_FOLDER, folder)
-        if os.path.isdir(folder_path):
-            for file in os.listdir(folder_path):
-                all_images.append((folder, file))
-    return render_template("index.html", images=all_images)
+    raspberries = get_raspberry_list()
+    return render_template('index.html', raspberries=raspberries)
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files.get('image')
-    rpi_id = request.form.get('rpi_id', 'unknown')
-    if not file:
-        return 'No image received', 400
+@app.route('/galeria')
+def galeria():
+    files = sorted(os.listdir(UPLOAD_FOLDER), reverse=True)
+    return render_template('galeria.html', images=files)
 
-    folder = os.path.join(UPLOAD_FOLDER, rpi_id)
-    os.makedirs(folder, exist_ok=True)
-    filename = file.filename
-    file.save(os.path.join(folder, filename))
-    print(f"[UPLOAD] {filename} recibido de {rpi_id}")
-    return 'OK', 200
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return redirect(f"/uploads/{filename}")
 
-@app.route('/uploads/<rpi_id>/<filename>')
-def get_image(rpi_id, filename):
-    return send_from_directory(os.path.join(UPLOAD_FOLDER, rpi_id), filename)
+@app.route('/config/<device_id>', methods=['GET', 'POST'])
+def config(device_id):
+    raspberries = get_raspberry_list()
+    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
 
-@app.route('/download/<rpi_id>/<filename>')
-def download_image(rpi_id, filename):
-    path = os.path.join(UPLOAD_FOLDER, rpi_id, filename)
-    if os.path.exists(path):
-        return send_file(path, as_attachment=True)
-    return 'Not found', 404
+    if not raspberry:
+        return "Raspberry no encontrada", 404
 
-@app.route('/delete/<rpi_id>/<filename>', methods=['POST'])
-def delete_image(rpi_id, filename):
-    path = os.path.join(UPLOAD_FOLDER, rpi_id, filename)
-    if os.path.exists(path):
-        os.remove(path)
-        return 'Deleted', 200
-    return 'Not found', 404
+    if request.method == 'POST':
+        interval = int(request.form['interval'])
+        enabled = 'enabled' in request.form
+
+        try:
+            res = requests.post(f"http://{raspberry['host']}:6000/config", json={
+                "enabled": enabled,
+                "interval": interval
+            })
+        except Exception as e:
+            return f"Error configurando {device_id}: {e}", 500
+
+        return redirect(url_for('index'))
+
+    # GET: mostrar configuración actual
+    try:
+        res = requests.get(f"http://{raspberry['host']}:6000/config")
+        config_data = res.json()
+    except Exception:
+        config_data = {"enabled": False, "interval": 10}
+
+    return render_template('config.html', config=config_data, device_id=device_id)
+
+@app.route('/foto/<device_id>', methods=['POST'])
+def foto(device_id):
+    raspberries = get_raspberry_list()
+    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
+
+    if not raspberry:
+        return "Raspberry no encontrada", 404
+
+    try:
+        res = requests.post(f"http://{raspberry['host']}:6000/foto")
+        if res.status_code == 200:
+            return redirect(url_for('index'))
+    except Exception as e:
+        return f"Error al tomar foto: {e}", 500
+
+    return "Error desconocido", 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
