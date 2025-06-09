@@ -1,4 +1,5 @@
 import os
 
-SERVER_URL = os.getenv("SERVER_URL", "http://localhost:5001")
-DEVICE_ID = os.getenv("DEVICE_ID", "rpi-1")
+SERVER_URL = os.environ.get("SERVER_URL", "http://192.168.1.100:5001")
+RPI_ID = os.environ.get("DEVICE_ID", "rpi-1")
+
