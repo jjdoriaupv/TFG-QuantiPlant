@@ -60,11 +60,13 @@ def config(device_id):
     if request.method == 'POST':
         interval = int(request.form['interval'])
         enabled = 'enabled' in request.form
+        exposure = int(request.form.get('exposure', 1000))  # nuevo campo
 
         try:
             res = requests.post(f"http://{raspberry['host']}:6000/config", json={
                 "enabled": enabled,
-                "interval": interval
+                "interval": interval,
+                "exposure": exposure
             })
         except Exception as e:
             return f"Error configurando {device_id}: {e}", 500
@@ -76,9 +78,11 @@ def config(device_id):
         res = requests.get(f"http://{raspberry['host']}:6000/config")
         config_data = res.json()
     except Exception:
-        config_data = {"enabled": False, "interval": 10}
+        config_data = {"enabled": False, "interval": 10, "exposure": 1000}
 
     return render_template('config.html', config=config_data, device_id=device_id)
+
+
 
 @app.route('/foto/<device_id>', methods=['POST'])
 def foto(device_id):

@@ -14,12 +14,20 @@
                 Captura automática
             </label>
             <br><br>
+
             <label>Intervalo (segundos):
-                <input type="number" name="interval" value="{{ config.interval }}">
+                <input type="number" name="interval" min="1" value="{{ config.interval }}">
             </label>
             <br><br>
+
+            <label>Exposición (ms):
+                <input type="number" name="exposure" min="1" value="{{ config.exposure }}">
+            </label>
+            <br><br>
+
             <button class="button" type="submit">Guardar</button>
         </form>
+
         <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
     </div>
 </body>
