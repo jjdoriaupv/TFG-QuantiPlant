@@ -36,6 +36,18 @@ def eliminar(filename):
     except Exception as e:
         return f"No se pudo eliminar la imagen: {e}", 500
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files.get('image')
+    rpi_id = request.form.get('rpi_id', 'unknown')
+
+    if file:
+        filename = file.filename
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+        print(f"[UPLOAD] Imagen guardada: {filepath}")
+        return "OK", 200
+    return "No file received", 400
 
 @app.route('/config/<device_id>', methods=['GET', 'POST'])
 def config(device_id):
@@ -85,32 +97,5 @@ def foto(device_id):
 
     return "Error desconocido", 500
 
-@app.route('/foto', methods=['POST'])
-def foto():
-    print(">>> [API] Recibida orden para tomar foto.")
-    try:
-        threading.Thread(target=take_photo, daemon=True).start()
-        return "Captura iniciada", 200
-    except Exception as e:
-        print(f"[ERROR] al ejecutar take_photo: {e}")
-        return f"Error al capturar: {e}", 500
-
-
-@app.route('/upload', methods=['POST'])
-def upload():
-    file = request.files.get('image')
-    rpi_id = request.form.get('rpi_id', 'unknown')
-
-    if file:
-        filename = file.filename
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
-        file.save(filepath)
-        print(f"[UPLOAD] Imagen guardada: {filepath}")
-        return "OK", 200
-    return "No file received", 400
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
-
-
-
