@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -41,12 +42,12 @@
             </ul>
 
             <form method="POST" action="{{ url_for('crear_carpeta') }}">
-                <input type="text" name="nombre_carpeta" placeholder="Nombre de nueva carpeta" required>
+                <input type="text" name="carpeta" placeholder="Nombre de nueva carpeta" required>
                 <button class="button" type="submit">➕ Crear carpeta</button>
             </form>
         {% else %}
             <h3>Contenido de: /{{ current_path }}</h3>
-            <a class="button" href="{{ url_for('galeria') }}">⬅️ Volver</a>
+            <a class="button" href="{{ url_for('galeria_root') }}">⬅️ Volver a carpetas</a>
             <div class="grid">
                 {% for image in images %}
                 <div class="grid-item">
