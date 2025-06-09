@@ -1,4 +1,5 @@
-from auto_capture import start_auto_capture, enable_capture, set_interval, set_exposure, get_config
+from auto_capture import start_auto_capture
+from config_state import enable_capture, set_interval, set_exposure, get_config
 from flask import Flask, request, jsonify
 from camera import take_photo
 import threading

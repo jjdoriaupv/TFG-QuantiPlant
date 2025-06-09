@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 import tempfile
 from config import SERVER_URL
-from auto_capture import get_config
+from config_state import get_config
 
 def take_photo(rpi_id="rpi-1"):
     print("[TAKE] Intentando capturar imagen...")

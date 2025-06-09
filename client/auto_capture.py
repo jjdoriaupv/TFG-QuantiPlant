@@ -1,13 +1,7 @@
 import threading
 import time
 from camera import take_photo
-
-# Configuración compartida
-config = {
-    'enabled': False,
-    'interval': 10,       # en segundos
-    'exposure': 1000      # en milisegundos
-}
+from config_state import config
 
 def loop():
     while True:
@@ -22,14 +16,3 @@ def start_auto_capture():
     t = threading.Thread(target=loop, daemon=True)
     t.start()
 
-def enable_capture(enabled):
-    config['enabled'] = enabled
-
-def set_interval(interval):
-    config['interval'] = interval
-
-def set_exposure(exposure):
-    config['exposure'] = exposure
-
-def get_config():
-    return config
