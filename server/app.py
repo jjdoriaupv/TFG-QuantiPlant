@@ -31,6 +31,7 @@ def crear_proyecto():
         os.makedirs(path, exist_ok=True)
     return redirect(url_for('index'))
 
+@app.route('/galeria', defaults={'proyecto': 'general'})
 @app.route('/galeria/<proyecto>')
 def galeria(proyecto):
     path = os.path.join(UPLOAD_FOLDER, proyecto)
@@ -38,6 +39,7 @@ def galeria(proyecto):
         return "Proyecto no encontrado", 404
     files = sorted(os.listdir(path), reverse=True)
     return render_template('galeria.html', images=files, server_url=request.host_url.rstrip('/'), proyecto=proyecto)
+
 
 @app.route('/uploads/<proyecto>/<filename>')
 def uploaded_file(proyecto, filename):
