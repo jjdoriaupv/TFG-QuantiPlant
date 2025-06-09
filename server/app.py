@@ -85,10 +85,6 @@ def foto(device_id):
 
     return "Error desconocido", 500
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
-
-
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files.get('image')
@@ -101,3 +97,9 @@ def upload():
         print(f"[UPLOAD] Imagen guardada: {filepath}")
         return "OK", 200
     return "No file received", 400
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001)
+
+
+
