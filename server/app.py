@@ -85,6 +85,17 @@ def foto(device_id):
 
     return "Error desconocido", 500
 
+@app.route('/foto', methods=['POST'])
+def foto():
+    print(">>> [API] Recibida orden para tomar foto.")
+    try:
+        threading.Thread(target=take_photo, daemon=True).start()
+        return "Captura iniciada", 200
+    except Exception as e:
+        print(f"[ERROR] al ejecutar take_photo: {e}")
+        return f"Error al capturar: {e}", 500
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files.get('image')
