@@ -10,15 +10,16 @@
         <h1>QuantiPlant - Panel de Control</h1>
 
         <h2>Dispositivos conectados</h2>
-        {% for device in devices %}
+        {% for device in raspberries %}
             <div class="device">
-                <h3>{{ device }}</h3>
-                <form method="POST" action="{{ url_for('take_photo', device_id=device) }}">
+                <h3>{{ device.id }}</h3>
+                <form method="POST" action="{{ url_for('foto', device_id=device.id) }}">
                     <button class="button" type="submit">📸 Tomar Foto</button>
                 </form>
-                <a class="button" href="{{ url_for('config', device_id=device) }}">⚙️ Configurar</a>
+                <a class="button" href="{{ url_for('config', device_id=device.id) }}">⚙️ Configurar</a>
             </div>
         {% endfor %}
+
 
         <a class="button" href="{{ url_for('galeria') }}">🖼️ Ver Galería</a>
     </div>

@@ -22,11 +22,19 @@ def index():
 @app.route('/galeria')
 def galeria():
     files = sorted(os.listdir(UPLOAD_FOLDER), reverse=True)
-    return render_template('galeria.html', images=files)
+    return render_template('galeria.html', images=files, server_url=request.host_url.rstrip('/'))
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+@app.route('/eliminar/<filename>', methods=['POST'])
+def eliminar(filename):
+    try:
+        os.remove(os.path.join(UPLOAD_FOLDER, filename))
+        return redirect(url_for('galeria'))
+    except Exception as e:
+        return f"No se pudo eliminar la imagen: {e}", 500
 
 
 @app.route('/config/<device_id>', methods=['GET', 'POST'])
