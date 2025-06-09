@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: .
+    container_name: quantiplant-client
+    environment:
+      - SERVER_URL=http://<IP_DEL_SERVIDOR>:5001
+      - DEVICE_ID=rpi-1
+    network_mode: host
+    privileged: true
+    volumes:
+      - /dev:/dev
+    restart: unless-stopped
