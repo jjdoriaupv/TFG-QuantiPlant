@@ -1,0 +1,27 @@
+<!-- server/templates/galeria_carpetas.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Carpetas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Carpetas disponibles</h1>
+        <ul>
+            {% for carpeta in carpetas %}
+                <li><a href="{{ url_for('galeria', carpeta=carpeta) }}">{{ carpeta }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <form method="POST" action="{{ url_for('crear_carpeta') }}">
+            <input type="text" name="carpeta" placeholder="Nombre de carpeta" required>
+            <button class="button" type="submit">➕ Crear carpeta</button>
+        </form>
+
+        <br>
+        <a class="button" href="{{ url_for('index') }}">⬅️ Volver al Panel</a>
+    </div>
+</body>
+</html>
