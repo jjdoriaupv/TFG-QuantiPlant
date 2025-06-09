@@ -2,60 +2,76 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Galería</title>
+    <title>Galería - Gestor de Archivos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        .folder {
+            margin: 10px 0;
+        }
         .grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
+            gap: 10px;
         }
         .grid-item {
             border: 1px solid #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-            width: 200px;
+            padding: 5px;
+            width: 180px;
             background: white;
+            border-radius: 6px;
+            text-align: center;
         }
-        .grid-item img {
-            width: 100%;
-            height: auto;
-        }
-        .grid-item form {
-            margin: 10px;
+        img {
+            max-width: 100%;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Galería de Imágenes - Proyecto "{{ proyecto }}"</h1>
+        <h1>Gestor de Archivos de Imágenes</h1>
 
-        <form method="GET" action="{{ url_for('galeria_redirect') }}">
-            <label for="proyecto">Seleccionar proyecto:</label>
-            <select name="proyecto" onchange="this.form.submit()">
-                {% for p in proyectos %}
-                    <option value="{{ p }}" {% if p == proyecto %}selected{% endif %}>{{ p }}</option>
+        {% if not current_path %}
+            <h3>Carpetas:</h3>
+            <ul>
+                {% for folder in folders %}
+                    <li class="folder">
+                        <a href="{{ url_for('galeria', path=folder) }}">📁 {{ folder }}</a>
+                    </li>
                 {% endfor %}
-            </select>
-        </form>
+            </ul>
 
-        <div class="grid">
-            {% for image in images %}
-            <div class="grid-item">
-                <a href="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" target="_blank">
-                    <img src="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" alt="{{ image }}">
-                </a>
-                <form action="{{ url_for('eliminar', proyecto=proyecto, filename=image) }}" method="POST">
-                    <button class="button" type="submit">🗑️ Eliminar</button>
-                </form>
-                <a class="button" href="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" download>⬇️ Descargar</a>
+            <form method="POST" action="{{ url_for('crear_carpeta') }}">
+                <input type="text" name="nombre_carpeta" placeholder="Nombre de nueva carpeta" required>
+                <button class="button" type="submit">➕ Crear carpeta</button>
+            </form>
+        {% else %}
+            <h3>Contenido de: /{{ current_path }}</h3>
+            <a class="button" href="{{ url_for('galeria') }}">⬅️ Volver</a>
+            <div class="grid">
+                {% for image in images %}
+                <div class="grid-item">
+                    <a href="{{ url_for('uploaded_file', path=current_path, filename=image) }}" target="_blank">
+                        <img src="{{ url_for('uploaded_file', path=current_path, filename=image) }}">
+                    </a>
+                    <form method="POST" action="{{ url_for('eliminar', path=current_path, filename=image) }}">
+                        <button class="button" type="submit">🗑️ Eliminar</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('mover_imagen') }}">
+                        <input type="hidden" name="origen" value="{{ current_path }}">
+                        <input type="hidden" name="archivo" value="{{ image }}">
+                        <select name="destino">
+                            {% for folder in folders if folder != current_path %}
+                                <option value="{{ folder }}">Mover a {{ folder }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="button" type="submit">📂 Mover</button>
+                    </form>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-
-        <br>
-        <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
+        {% endif %}
     </div>
 </body>
 </html>
+
