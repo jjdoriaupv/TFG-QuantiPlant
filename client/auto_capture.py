@@ -2,24 +2,27 @@ import threading
 import time
 from camera import take_photo
 
-capture_enabled = False
-capture_interval = 10
+config = {
+    'enabled': False,
+    'interval': 10  # en segundos
+}
 
+def loop():
+    while True:
+        if config['enabled']:
+            print("[AUTO] Tomando foto automática...")
+            take_photo()
+        time.sleep(config['interval'])
 
 def start_auto_capture():
-    def loop():
-        while True:
-            if capture_enabled:
-                take_photo()
-            time.sleep(capture_interval)
-
     t = threading.Thread(target=loop, daemon=True)
     t.start()
 
-def enable_capture(enable):
-    global capture_enabled
-    capture_enabled = enable
+def enable_capture(enabled):
+    config['enabled'] = enabled
 
-def set_interval(seconds):
-    global capture_interval
-    capture_interval = seconds
+def set_interval(interval):
+    config['interval'] = interval
+
+def get_config():
+    return config
