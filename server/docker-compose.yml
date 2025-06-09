@@ -3,7 +3,7 @@ version: '3.8'
 services:
   server:
     build:
-      context: ./server
+      context: .
     container_name: quantiplant-server
     ports:
       - "5001:5001"
