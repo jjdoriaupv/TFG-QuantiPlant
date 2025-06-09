@@ -60,7 +60,10 @@ def config(device_id):
     if request.method == 'POST':
         interval = int(request.form['interval'])
         enabled = 'enabled' in request.form
-        exposure = int(request.form.get('exposure', 1000))  # nuevo campo
+        exposure = int(request.form.get('exposure', 1000))
+        if exposure > 60000:
+            exposure = 60000
+
 
         try:
             res = requests.post(f"http://{raspberry['host']}:6000/config", json={

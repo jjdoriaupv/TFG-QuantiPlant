@@ -14,4 +14,7 @@ def set_interval(interval):
     config['interval'] = interval
 
 def set_exposure(exposure):
+    if exposure > 60000:
+        exposure = 60000
     config['exposure'] = exposure
+
