@@ -8,6 +8,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 RASPBERRIES_FILE = 'raspberries.json'
 
+# Asegurarnos de que la carpeta uploads existe
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -16,14 +17,18 @@ def get_raspberry_list():
         return json.load(f)
 
 def get_folders():
-    return sorted([d for d in os.listdir(UPLOAD_FOLDER) if os.path.isdir(os.path.join(UPLOAD_FOLDER, d))])
+    # Solo subdirectorios directos
+    return sorted(d for d in os.listdir(UPLOAD_FOLDER)
+                  if os.path.isdir(os.path.join(UPLOAD_FOLDER, d)))
 
+# ─── PÁGINA PRINCIPAL ─────────────────────────────────────────────────────────
 @app.route('/')
 def index():
     raspberries = get_raspberry_list()
     folders = get_folders()
     return render_template('index.html', raspberries=raspberries, folders=folders)
 
+# ─── CREAR CARPETA ────────────────────────────────────────────────────────────
 @app.route('/crear_carpeta', methods=['POST'])
 def crear_carpeta():
     nombre = request.form.get('carpeta')
@@ -31,9 +36,29 @@ def crear_carpeta():
         os.makedirs(os.path.join(UPLOAD_FOLDER, nombre), exist_ok=True)
     return redirect(url_for('index'))
 
+# ─── ELIMINAR CARPETA ──────────────────────────────────────────────────────────
+@app.route('/eliminar_carpeta', methods=['POST'])
+def eliminar_carpeta():
+    carpeta = request.form.get('carpeta')
+    if not carpeta:
+        return "Falta nombre de carpeta", 400
+
+    path = os.path.join(UPLOAD_FOLDER, carpeta)
+    if not os.path.isdir(path):
+        return "Carpeta no encontrada", 404
+
+    try:
+        shutil.rmtree(path)
+    except Exception as e:
+        return f"Error eliminando carpeta: {e}", 500
+
+    return redirect(url_for('galeria_root'))
+
+# ─── GESTOR DE CARPETAS / GALERÍA ─────────────────────────────────────────────
 @app.route('/galeria')
 def galeria_root():
     folders = get_folders()
+    # current_path=None indica que mostramos listado de carpetas
     return render_template('galeria.html', current_path=None, folders=folders, images=[])
 
 @app.route('/galeria/<path:path>')
@@ -43,13 +68,21 @@ def galeria(path):
         return "Carpeta no encontrada", 404
 
     folders = get_folders()
-    images = sorted([f for f in os.listdir(full_path) if os.path.isfile(os.path.join(full_path, f))])
-    return render_template('galeria.html', current_path=path, folders=folders, images=images)
+    images = sorted(
+        f for f in os.listdir(full_path)
+        if os.path.isfile(os.path.join(full_path, f))
+    )
+    return render_template('galeria.html',
+                           current_path=path,
+                           folders=folders,
+                           images=images)
 
+# ─── SERVIR IMÁGENES ──────────────────────────────────────────────────────────
 @app.route('/uploads/<path:path>/<filename>')
 def uploaded_file(path, filename):
     return send_from_directory(os.path.join(UPLOAD_FOLDER, path), filename)
 
+# ─── ELIMINAR IMAGEN ──────────────────────────────────────────────────────────
 @app.route('/eliminar/<path:path>/<filename>', methods=['POST'])
 def eliminar(path, filename):
     try:
@@ -58,6 +91,7 @@ def eliminar(path, filename):
     except Exception as e:
         return f"No se pudo eliminar la imagen: {e}", 500
 
+# ─── MOVER IMAGEN ─────────────────────────────────────────────────────────────
 @app.route('/mover', methods=['POST'])
 def mover_imagen():
     origen = request.form.get('origen')
@@ -74,6 +108,7 @@ def mover_imagen():
         shutil.move(origen_path, destino_path)
     return redirect(url_for('galeria', path=origen))
 
+# ─── SUBIDA DE IMÁGENES DESDE RASPBERRY ───────────────────────────────────────
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files.get('image')
@@ -91,17 +126,20 @@ def upload():
         return "OK", 200
     return "No file received", 400
 
+# ─── TOMAR FOTO REMOTA ────────────────────────────────────────────────────────
 @app.route('/foto/<device_id>', methods=['POST'])
 def foto(device_id):
     carpeta = request.form.get('carpeta', device_id)
     raspberries = get_raspberry_list()
     raspberry = next((r for r in raspberries if r['id'] == device_id), None)
-
     if not raspberry:
         return "Raspberry no encontrada", 404
 
     try:
-        res = requests.post(f"http://{raspberry['host']}:6000/foto", json={"carpeta": carpeta})
+        res = requests.post(
+            f"http://{raspberry['host']}:6000/foto",
+            json={"carpeta": carpeta}
+        )
         if res.status_code == 200:
             return redirect(url_for('galeria', path=carpeta))
     except Exception as e:
@@ -109,11 +147,11 @@ def foto(device_id):
 
     return "Error desconocido", 500
 
+# ─── CONFIGURACIÓN REMOTA ────────────────────────────────────────────────────
 @app.route('/config/<device_id>', methods=['GET', 'POST'])
 def config(device_id):
     raspberries = get_raspberry_list()
     raspberry = next((r for r in raspberries if r['id'] == device_id), None)
-
     if not raspberry:
         return "Raspberry no encontrada", 404
 
@@ -125,11 +163,12 @@ def config(device_id):
             exposure = 60000
 
         try:
-            res = requests.post(f"http://{raspberry['host']}:6000/config", json={
-                "enabled": enabled,
-                "interval": interval,
-                "exposure": exposure
-            })
+            requests.post(
+                f"http://{raspberry['host']}:6000/config",
+                json={"enabled": enabled,
+                      "interval": interval,
+                      "exposure": exposure}
+            )
         except Exception as e:
             return f"Error configurando {device_id}: {e}", 500
 
@@ -141,7 +180,9 @@ def config(device_id):
     except Exception:
         config_data = {"enabled": False, "interval": 10, "exposure": 1000}
 
-    return render_template('config.html', config=config_data, device_id=device_id)
+    return render_template('config.html',
+                           config=config_data,
+                           device_id=device_id)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
