@@ -5,8 +5,8 @@ import tempfile
 from config import SERVER_URL
 from config_state import get_config
 
-def take_photo(rpi_id="rpi-1", proyecto="default"):
-    print(f"[TAKE] Intentando capturar imagen para proyecto: {proyecto}")
+def take_photo(rpi_id="rpi-1"):
+    print(f"[TAKE] Intentando capturar imagen para carpeta: {rpi_id}")
 
     config = get_config()
     exposure = config.get('exposure', 1000)
@@ -27,7 +27,7 @@ def take_photo(rpi_id="rpi-1", proyecto="default"):
                 files = {'image': (filename, f, 'image/jpeg')}
                 data = {
                     'rpi_id': rpi_id,
-                    'proyecto': proyecto  # Enviar el proyecto
+                    'carpeta': rpi_id  # usar rpi_id como carpeta de destino
                 }
                 response = requests.post(f"{SERVER_URL}/upload", files=files, data=data)
 

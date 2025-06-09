@@ -1,4 +1,3 @@
-<!-- server/templates/galeria_carpetas.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +10,7 @@
         <h1>Carpetas disponibles</h1>
         <ul>
             {% for carpeta in carpetas %}
-                <li><a href="{{ url_for('galeria', carpeta=carpeta) }}">{{ carpeta }}</a></li>
+                <li><a href="{{ url_for('galeria', path=carpeta) }}">{{ carpeta }}</a></li>
             {% endfor %}
         </ul>
 
