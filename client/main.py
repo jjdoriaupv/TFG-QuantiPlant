@@ -1,10 +1,8 @@
-from auto_capture import start_auto_capture, enable_capture, set_interval
+from auto_capture import start_auto_capture
 import time
 
 def main():
     print("=== CLIENTE INICIADO ===")
-    enable_capture(True)
-    set_interval(10)
     start_auto_capture()
 
     try:
@@ -15,6 +13,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 

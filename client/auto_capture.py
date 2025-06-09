@@ -12,7 +12,10 @@ def loop():
         if config['enabled']:
             print("[AUTO] Tomando foto automática...")
             take_photo()
+        else:
+            print("[AUTO] Captura desactivada, esperando configuración...")
         time.sleep(config['interval'])
+
 
 def start_auto_capture():
     t = threading.Thread(target=loop, daemon=True)
