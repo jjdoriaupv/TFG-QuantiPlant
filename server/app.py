@@ -21,7 +21,8 @@ def get_projects():
 def index():
     raspberries = get_raspberry_list()
     projects = get_projects()
-    return render_template('index.html', raspberries=raspberries, projects=projects)
+    proyecto_actual = request.args.get('proyecto', 'default')
+    return render_template('index.html', raspberries=raspberries, projects=projects, proyecto_actual=proyecto_actual)
 
 @app.route('/crear_proyecto', methods=['POST'])
 def crear_proyecto():
@@ -31,7 +32,7 @@ def crear_proyecto():
         os.makedirs(path, exist_ok=True)
     return redirect(url_for('index'))
 
-@app.route('/galeria', defaults={'proyecto': 'general'})
+@app.route('/galeria', defaults={'proyecto': 'default'})
 @app.route('/galeria/<proyecto>')
 def galeria(proyecto):
     path = os.path.join(UPLOAD_FOLDER, proyecto)
@@ -39,7 +40,6 @@ def galeria(proyecto):
         return "Proyecto no encontrado", 404
     files = sorted(os.listdir(path), reverse=True)
     return render_template('galeria.html', images=files, server_url=request.host_url.rstrip('/'), proyecto=proyecto)
-
 
 @app.route('/uploads/<proyecto>/<filename>')
 def uploaded_file(proyecto, filename):
@@ -116,11 +116,17 @@ def foto(device_id):
     try:
         res = requests.post(f"http://{raspberry['host']}:6000/foto", json={"proyecto": proyecto})
         if res.status_code == 200:
-            return redirect(url_for('index'))
+            return redirect(url_for('galeria', proyecto=proyecto))
     except Exception as e:
         return f"Error al tomar foto: {e}", 500
 
     return "Error desconocido", 500
+
+@app.route('/galeria_redirect')
+def galeria_redirect():
+    proyecto = request.args.get('proyecto', 'default')
+    return redirect(url_for('galeria', proyecto=proyecto))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

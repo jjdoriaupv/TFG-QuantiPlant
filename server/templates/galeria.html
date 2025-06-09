@@ -29,9 +29,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Galería de Imágenes - Proyecto {{ proyecto }}</h1>
+        <h1>Galería de Imágenes - Proyecto "{{ proyecto }}"</h1>
 
-        <form method="GET" action="{{ url_for('galeria') }}">
+        <form method="GET" action="{{ url_for('galeria_redirect') }}">
             <label for="proyecto">Seleccionar proyecto:</label>
             <select name="proyecto" onchange="this.form.submit()">
                 {% for p in proyectos %}
@@ -49,10 +49,11 @@
                 <form action="{{ url_for('eliminar', proyecto=proyecto, filename=image) }}" method="POST">
                     <button class="button" type="submit">🗑️ Eliminar</button>
                 </form>
-                <a class="button" href="{{ server_url }}/download/{{ proyecto }}/{{ image }}">⬇️ Descargar</a>
+                <a class="button" href="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" download>⬇️ Descargar</a>
             </div>
             {% endfor %}
         </div>
+
         <br>
         <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
     </div>
