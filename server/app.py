@@ -109,5 +109,39 @@ def foto(device_id):
 
     return "Error desconocido", 500
 
+@app.route('/config/<device_id>', methods=['GET', 'POST'])
+def config(device_id):
+    raspberries = get_raspberry_list()
+    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
+
+    if not raspberry:
+        return "Raspberry no encontrada", 404
+
+    if request.method == 'POST':
+        interval = int(request.form['interval'])
+        enabled = 'enabled' in request.form
+        exposure = int(request.form.get('exposure', 1000))
+        if exposure > 60000:
+            exposure = 60000
+
+        try:
+            res = requests.post(f"http://{raspberry['host']}:6000/config", json={
+                "enabled": enabled,
+                "interval": interval,
+                "exposure": exposure
+            })
+        except Exception as e:
+            return f"Error configurando {device_id}: {e}", 500
+
+        return redirect(url_for('index'))
+
+    try:
+        res = requests.get(f"http://{raspberry['host']}:6000/config")
+        config_data = res.json()
+    except Exception:
+        config_data = {"enabled": False, "interval": 10, "exposure": 1000}
+
+    return render_template('config.html', config=config_data, device_id=device_id)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
