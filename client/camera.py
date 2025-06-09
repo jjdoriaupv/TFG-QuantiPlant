@@ -3,15 +3,24 @@ from datetime import datetime
 import requests
 import tempfile
 from config import SERVER_URL
+from auto_capture import get_config
 
 def take_photo(rpi_id="rpi-1"):
     print("[TAKE] Intentando capturar imagen...")
+
+    config = get_config()
+    exposure = config.get('exposure', 1000)  # milisegundos por defecto
+    shutter_time = str(exposure * 1000)  # convertir a microsegundos
+
     with tempfile.NamedTemporaryFile(suffix=".jpg", delete=True) as tmpfile:
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"{rpi_id}_{timestamp}.jpg"
 
         try:
-            subprocess.run(["libcamera-jpeg", "-o", tmpfile.name], check=True)
+            subprocess.run(
+                ["libcamera-jpeg", "--shutter", shutter_time, "-o", tmpfile.name],
+                check=True
+            )
             print("[TAKE] Imagen capturada, enviando al servidor...")
 
             with open(tmpfile.name, 'rb') as f:
