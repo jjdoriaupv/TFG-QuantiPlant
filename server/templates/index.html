@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Galería Global</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Galería de Fotos - Todas las Raspberries</h1>
+    <div class="grid">
+      {% for rpi, filename in images %}
+        <div class="grid-item">
+          <img src="/uploads/{{ rpi }}/{{ filename }}" alt="{{ filename }}" onclick="window.open('/uploads/{{ rpi }}/{{ filename }}','_blank')">
+          <a class="button" href="/download/{{ rpi }}/{{ filename }}">⬇ Descargar</a>
+          <form action="/delete/{{ rpi }}/{{ filename }}" method="post">
+            <button type="submit">🗑</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+    container_name: quantiplant-server
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./server/uploads:/app/uploads
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+    container_name: quantiplant-client
+    depends_on:
+      - server
+    environment:
+      - SERVER_URL=http://server:5001
+      - DEVICE_ID=rpi-1
+    restart: unless-stopped
