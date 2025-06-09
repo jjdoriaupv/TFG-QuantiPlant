@@ -9,17 +9,22 @@ UPLOAD_FOLDER = 'uploads'
 RASPBERRIES_FILE = 'raspberries.json'
 
 # Asegurarnos de que la carpeta uploads existe
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+def ensure_upload_folder():
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
+ensure_upload_folder()
+
+# Lectura de raspberries y carpetas
 def get_raspberry_list():
     with open(RASPBERRIES_FILE) as f:
         return json.load(f)
 
 def get_folders():
-    # Solo subdirectorios directos
-    return sorted(d for d in os.listdir(UPLOAD_FOLDER)
-                  if os.path.isdir(os.path.join(UPLOAD_FOLDER, d)))
+    return sorted(
+        d for d in os.listdir(UPLOAD_FOLDER)
+        if os.path.isdir(os.path.join(UPLOAD_FOLDER, d))
+    )
 
 # ─── PÁGINA PRINCIPAL ─────────────────────────────────────────────────────────
 @app.route('/')
@@ -34,7 +39,7 @@ def crear_carpeta():
     nombre = request.form.get('carpeta')
     if nombre:
         os.makedirs(os.path.join(UPLOAD_FOLDER, nombre), exist_ok=True)
-    return redirect(url_for('index'))
+    return redirect(url_for('galeria_root'))
 
 # ─── ELIMINAR CARPETA ──────────────────────────────────────────────────────────
 @app.route('/eliminar_carpeta', methods=['POST'])
@@ -42,23 +47,19 @@ def eliminar_carpeta():
     carpeta = request.form.get('carpeta')
     if not carpeta:
         return "Falta nombre de carpeta", 400
-
     path = os.path.join(UPLOAD_FOLDER, carpeta)
     if not os.path.isdir(path):
         return "Carpeta no encontrada", 404
-
     try:
         shutil.rmtree(path)
     except Exception as e:
         return f"Error eliminando carpeta: {e}", 500
-
     return redirect(url_for('galeria_root'))
 
 # ─── GESTOR DE CARPETAS / GALERÍA ─────────────────────────────────────────────
 @app.route('/galeria')
 def galeria_root():
     folders = get_folders()
-    # current_path=None indica que mostramos listado de carpetas
     return render_template('galeria.html', current_path=None, folders=folders, images=[])
 
 @app.route('/galeria/<path:path>')
@@ -66,16 +67,12 @@ def galeria(path):
     full_path = os.path.join(UPLOAD_FOLDER, path)
     if not os.path.exists(full_path):
         return "Carpeta no encontrada", 404
-
     folders = get_folders()
     images = sorted(
         f for f in os.listdir(full_path)
         if os.path.isfile(os.path.join(full_path, f))
     )
-    return render_template('galeria.html',
-                           current_path=path,
-                           folders=folders,
-                           images=images)
+    return render_template('galeria.html', current_path=path, folders=folders, images=images)
 
 # ─── SERVIR IMÁGENES ──────────────────────────────────────────────────────────
 @app.route('/uploads/<path:path>/<filename>')
@@ -99,11 +96,9 @@ def mover_imagen():
     destino = request.form.get('destino')
     if not all([origen, archivo, destino]):
         return "Datos incompletos", 400
-
     origen_path = os.path.join(UPLOAD_FOLDER, origen, archivo)
     destino_dir = os.path.join(UPLOAD_FOLDER, destino)
     destino_path = os.path.join(destino_dir, archivo)
-
     if os.path.exists(origen_path) and os.path.exists(destino_dir):
         shutil.move(origen_path, destino_path)
     return redirect(url_for('galeria', path=origen))
@@ -114,15 +109,11 @@ def upload():
     file = request.files.get('image')
     rpi_id = request.form.get('rpi_id', 'unknown')
     carpeta = request.form.get('carpeta', rpi_id)
-
     path = os.path.join(UPLOAD_FOLDER, carpeta)
     os.makedirs(path, exist_ok=True)
-
     if file:
         filename = file.filename
-        filepath = os.path.join(path, filename)
-        file.save(filepath)
-        print(f"[UPLOAD] Imagen guardada: {filepath}")
+        file.save(os.path.join(path, filename))
         return "OK", 200
     return "No file received", 400
 
@@ -134,7 +125,6 @@ def foto(device_id):
     raspberry = next((r for r in raspberries if r['id'] == device_id), None)
     if not raspberry:
         return "Raspberry no encontrada", 404
-
     try:
         res = requests.post(
             f"http://{raspberry['host']}:6000/foto",
@@ -144,7 +134,6 @@ def foto(device_id):
             return redirect(url_for('galeria', path=carpeta))
     except Exception as e:
         return f"Error al tomar foto: {e}", 500
-
     return "Error desconocido", 500
 
 # ─── CONFIGURACIÓN REMOTA ────────────────────────────────────────────────────
@@ -154,14 +143,10 @@ def config(device_id):
     raspberry = next((r for r in raspberries if r['id'] == device_id), None)
     if not raspberry:
         return "Raspberry no encontrada", 404
-
     if request.method == 'POST':
         interval = int(request.form['interval'])
         enabled = 'enabled' in request.form
-        exposure = int(request.form.get('exposure', 1000))
-        if exposure > 60000:
-            exposure = 60000
-
+        exposure = min(int(request.form.get('exposure', 1000)), 60000)
         try:
             requests.post(
                 f"http://{raspberry['host']}:6000/config",
@@ -171,18 +156,13 @@ def config(device_id):
             )
         except Exception as e:
             return f"Error configurando {device_id}: {e}", 500
-
         return redirect(url_for('index'))
-
     try:
         res = requests.get(f"http://{raspberry['host']}:6000/config")
         config_data = res.json()
     except Exception:
         config_data = {"enabled": False, "interval": 10, "exposure": 1000}
-
-    return render_template('config.html',
-                           config=config_data,
-                           device_id=device_id)
+    return render_template('config.html', config=config_data, device_id=device_id)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
