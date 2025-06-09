@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 import requests
 import json
@@ -26,7 +26,8 @@ def galeria():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return redirect(f"/uploads/{filename}")
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
 
 @app.route('/config/<device_id>', methods=['GET', 'POST'])
 def config(device_id):
@@ -78,3 +79,17 @@ def foto(device_id):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
+
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    file = request.files.get('image')
+    rpi_id = request.form.get('rpi_id', 'unknown')
+
+    if file:
+        filename = file.filename
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+        print(f"[UPLOAD] Imagen guardada: {filepath}")
+        return "OK", 200
+    return "No file received", 400

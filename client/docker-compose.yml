@@ -1,10 +1,23 @@
 version: '3.8'
 
 services:
-  client:
+  client-capture:
     build: .
     container_name: quantiplant-client
     environment:
       - SERVER_URL=http://192.168.1.100:5001
       - DEVICE_ID=rpi-1
+    command: python main.py
     restart: unless-stopped
+
+  client-server:
+    build: .
+    container_name: quantiplant-server
+    environment:
+      - SERVER_URL=http://192.168.1.100:5001
+      - DEVICE_ID=rpi-1
+    command: python rpi_server.py
+    ports:
+      - "6000:6000"
+    restart: unless-stopped
+
