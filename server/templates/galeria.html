@@ -61,6 +61,7 @@
                     <form method="POST" action="{{ url_for('eliminar', path=current_path, filename=image) }}">
                         <button class="button" type="submit">🗑️ Eliminar</button>
                     </form>
+                    <a class="button" href="{{ url_for('uploaded_file', path=current_path, filename=image) }}" download>⬇️ Descargar</a>
                     <form method="POST" action="{{ url_for('mover_imagen') }}">
                         <input type="hidden" name="origen" value="{{ current_path }}">
                         <input type="hidden" name="archivo" value="{{ image }}">
