@@ -14,25 +14,40 @@ def get_raspberry_list():
     with open(RASPBERRIES_FILE) as f:
         return json.load(f)
 
+def get_projects():
+    return [d for d in os.listdir(UPLOAD_FOLDER) if os.path.isdir(os.path.join(UPLOAD_FOLDER, d))]
+
 @app.route('/')
 def index():
     raspberries = get_raspberry_list()
-    return render_template('index.html', raspberries=raspberries)
+    projects = get_projects()
+    return render_template('index.html', raspberries=raspberries, projects=projects)
 
-@app.route('/galeria')
-def galeria():
-    files = sorted(os.listdir(UPLOAD_FOLDER), reverse=True)
-    return render_template('galeria.html', images=files, server_url=request.host_url.rstrip('/'))
+@app.route('/crear_proyecto', methods=['POST'])
+def crear_proyecto():
+    nombre = request.form.get('nombre')
+    if nombre:
+        path = os.path.join(UPLOAD_FOLDER, nombre)
+        os.makedirs(path, exist_ok=True)
+    return redirect(url_for('index'))
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
+@app.route('/galeria/<proyecto>')
+def galeria(proyecto):
+    path = os.path.join(UPLOAD_FOLDER, proyecto)
+    if not os.path.exists(path):
+        return "Proyecto no encontrado", 404
+    files = sorted(os.listdir(path), reverse=True)
+    return render_template('galeria.html', images=files, server_url=request.host_url.rstrip('/'), proyecto=proyecto)
 
-@app.route('/eliminar/<filename>', methods=['POST'])
-def eliminar(filename):
+@app.route('/uploads/<proyecto>/<filename>')
+def uploaded_file(proyecto, filename):
+    return send_from_directory(os.path.join(UPLOAD_FOLDER, proyecto), filename)
+
+@app.route('/eliminar/<proyecto>/<filename>', methods=['POST'])
+def eliminar(proyecto, filename):
     try:
-        os.remove(os.path.join(UPLOAD_FOLDER, filename))
-        return redirect(url_for('galeria'))
+        os.remove(os.path.join(UPLOAD_FOLDER, proyecto, filename))
+        return redirect(url_for('galeria', proyecto=proyecto))
     except Exception as e:
         return f"No se pudo eliminar la imagen: {e}", 500
 
@@ -40,10 +55,14 @@ def eliminar(filename):
 def upload():
     file = request.files.get('image')
     rpi_id = request.form.get('rpi_id', 'unknown')
+    proyecto = request.form.get('proyecto', 'default')
+
+    path = os.path.join(UPLOAD_FOLDER, proyecto)
+    os.makedirs(path, exist_ok=True)
 
     if file:
         filename = file.filename
-        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        filepath = os.path.join(path, filename)
         file.save(filepath)
         print(f"[UPLOAD] Imagen guardada: {filepath}")
         return "OK", 200
@@ -64,7 +83,6 @@ def config(device_id):
         if exposure > 60000:
             exposure = 60000
 
-
         try:
             res = requests.post(f"http://{raspberry['host']}:6000/config", json={
                 "enabled": enabled,
@@ -76,7 +94,6 @@ def config(device_id):
 
         return redirect(url_for('index'))
 
-    # GET: mostrar configuración actual
     try:
         res = requests.get(f"http://{raspberry['host']}:6000/config")
         config_data = res.json()
@@ -85,10 +102,9 @@ def config(device_id):
 
     return render_template('config.html', config=config_data, device_id=device_id)
 
-
-
 @app.route('/foto/<device_id>', methods=['POST'])
 def foto(device_id):
+    proyecto = request.form.get('proyecto', 'default')
     raspberries = get_raspberry_list()
     raspberry = next((r for r in raspberries if r['id'] == device_id), None)
 
@@ -96,7 +112,7 @@ def foto(device_id):
         return "Raspberry no encontrada", 404
 
     try:
-        res = requests.post(f"http://{raspberry['host']}:6000/foto")
+        res = requests.post(f"http://{raspberry['host']}:6000/foto", json={"proyecto": proyecto})
         if res.status_code == 200:
             return redirect(url_for('index'))
     except Exception as e:

@@ -29,17 +29,27 @@
 </head>
 <body>
     <div class="container">
-        <h1>Galería de Imágenes</h1>
+        <h1>Galería de Imágenes - Proyecto {{ proyecto }}</h1>
+
+        <form method="GET" action="{{ url_for('galeria') }}">
+            <label for="proyecto">Seleccionar proyecto:</label>
+            <select name="proyecto" onchange="this.form.submit()">
+                {% for p in proyectos %}
+                    <option value="{{ p }}" {% if p == proyecto %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
         <div class="grid">
             {% for image in images %}
             <div class="grid-item">
-                <a href="{{ server_url }}/uploads/{{ image }}" target="_blank">
-                    <img src="{{ server_url }}/uploads/{{ image }}" alt="{{ image }}">
+                <a href="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" target="_blank">
+                    <img src="{{ server_url }}/uploads/{{ proyecto }}/{{ image }}" alt="{{ image }}">
                 </a>
-                <form action="{{ url_for('eliminar', filename=image) }}" method="POST">
+                <form action="{{ url_for('eliminar', proyecto=proyecto, filename=image) }}" method="POST">
                     <button class="button" type="submit">🗑️ Eliminar</button>
                 </form>
-                <a class="button" href="{{ server_url }}/download/{{ image }}">⬇️ Descargar</a>
+                <a class="button" href="{{ server_url }}/download/{{ proyecto }}/{{ image }}">⬇️ Descargar</a>
             </div>
             {% endfor %}
         </div>

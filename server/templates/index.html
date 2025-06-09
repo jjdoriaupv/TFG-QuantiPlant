@@ -9,19 +9,37 @@
     <div class="container">
         <h1>QuantiPlant - Panel de Control</h1>
 
+        <h2>Proyecto actual</h2>
+        <form method="GET" action="{{ url_for('index') }}">
+            <label for="proyecto">Seleccionar proyecto:</label>
+            <select name="proyecto" onchange="this.form.submit()">
+                {% for p in proyectos %}
+                    <option value="{{ p }}" {% if p == proyecto_actual %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <form method="POST" action="{{ url_for('crear_proyecto') }}">
+            <label for="nuevo_proyecto">Crear nuevo proyecto:</label>
+            <input type="text" name="nuevo_proyecto" required>
+            <button class="button" type="submit">➕ Crear</button>
+        </form>
+
+        <hr>
+
         <h2>Dispositivos conectados</h2>
         {% for device in raspberries %}
             <div class="device">
                 <h3>{{ device.id }}</h3>
                 <form method="POST" action="{{ url_for('foto', device_id=device.id) }}">
+                    <input type="hidden" name="proyecto" value="{{ proyecto_actual }}">
                     <button class="button" type="submit">📸 Tomar Foto</button>
                 </form>
                 <a class="button" href="{{ url_for('config', device_id=device.id) }}">⚙️ Configurar</a>
             </div>
         {% endfor %}
 
-
-        <a class="button" href="{{ url_for('galeria') }}">🖼️ Ver Galería</a>
+        <a class="button" href="{{ url_for('galeria', proyecto=proyecto_actual) }}">🖼️ Ver Galería</a>
     </div>
 </body>
 </html>
