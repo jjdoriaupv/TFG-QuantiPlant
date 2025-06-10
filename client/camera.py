@@ -9,8 +9,11 @@ from config_state import get_config
 def toggle_led(action):
     try:
         subprocess.run(['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', action], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"[LED] Fallo al ejecutar toggle_usb.sh con acción {action}: {e}")
     except Exception as e:
-        print(f"[LED] Error al {action} LED: {e}")
+        print(f"[LED] Error inesperado al {action} LED: {e}")
+
 
 def take_photo(rpi_id="rpi-1"):
     print(f"[TAKE] Intentando capturar imagen para carpeta: {rpi_id}")
