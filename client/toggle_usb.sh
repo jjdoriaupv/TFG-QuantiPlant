@@ -8,4 +8,5 @@ if [[ "$ACTION" != "bind" && "$ACTION" != "unbind" ]]; then
     exit 1
 fi
 
-echo "$DEVICE" | tee /sys/bus/usb/drivers/usb/"$ACTION"
+echo "$DEVICE" | sudo tee /sys/bus/usb/drivers/usb/"$ACTION"
+
