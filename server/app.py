@@ -135,12 +135,16 @@ def config(device_id):
         interval = int(request.form['interval'])
         enabled = 'enabled' in request.form
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
+        led_auto = 'led_auto' in request.form
         try:
             requests.post(
                 f"http://{raspberry['host']}:6000/config",
-                json={"enabled": enabled,
-                      "interval": interval,
-                      "exposure": exposure}
+                json={
+                    "enabled": enabled,
+                    "interval": interval,
+                    "exposure": exposure,
+                    "led_auto": led_auto
+                }
             )
         except Exception as e:
             return f"Error configurando {device_id}: {e}", 500
@@ -149,7 +153,7 @@ def config(device_id):
         res = requests.get(f"http://{raspberry['host']}:6000/config")
         config_data = res.json()
     except Exception:
-        config_data = {"enabled": False, "interval": 10, "exposure": 1000}
+        config_data = {"enabled": False, "interval": 10, "exposure": 1000, "led_auto": False}
     return render_template('config.html', config=config_data, device_id=device_id)
 
 @app.route('/toggle_usb/<device_id>', methods=['POST'])
