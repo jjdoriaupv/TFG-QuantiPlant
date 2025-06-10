@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import shutil
+import subprocess
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -163,6 +164,21 @@ def config(device_id):
     except Exception:
         config_data = {"enabled": False, "interval": 10, "exposure": 1000}
     return render_template('config.html', config=config_data, device_id=device_id)
+
+@app.route('/toggle_usb/<device_id>', methods=['POST'])
+def toggle_usb(device_id):
+    action = request.form.get('action')
+    if action not in ['on', 'off']:
+        return "Acción no válida", 400
+
+    cmd = ['sudo', 'home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind' if action == 'off' else 'bind']
+
+    try:
+        subprocess.run(cmd, check=True)
+        return redirect(url_for('config', device_id=device_id))
+    except subprocess.CalledProcessError as e:
+        return f"Error al ejecutar comando: {e}", 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

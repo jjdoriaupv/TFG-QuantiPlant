@@ -27,6 +27,16 @@
 
             <button class="button" type="submit">Guardar</button>
         </form>
+        <form method="POST" action="{{ url_for('toggle_usb', device_id=device_id) }}">
+            <input type="hidden" name="action" value="off">
+            <button class="button" type="submit">💡 Apagar LED (USB)</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('toggle_usb', device_id=device_id) }}">
+            <input type="hidden" name="action" value="on">
+            <button class="button" type="submit">💡 Encender LED (USB)</button>
+        </form>
+
 
         <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
     </div>
