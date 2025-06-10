@@ -1,5 +1,5 @@
 from auto_capture import start_auto_capture
-from config_state import enable_capture, set_interval, set_exposure, get_config
+from config_state import enable_capture, set_interval, set_exposure, set_led_auto, get_config
 from flask import Flask, request, jsonify
 from camera import take_photo
 import threading
@@ -31,6 +31,7 @@ def config():
             enable_capture(data.get("enabled", False))
             set_interval(int(data.get("interval", 10)))
             set_exposure(int(data.get("exposure", 1000)))
+            set_led_auto(data.get("led_auto", False))
             return "Configuración actualizada", 200
         except Exception as e:
             return f"Error en configuración: {e}", 400
