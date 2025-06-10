@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from camera import take_photo
 import threading
 import time
+import subprocess
 
 app = Flask(__name__)
 
@@ -35,6 +36,24 @@ def config():
             return f"Error en configuración: {e}", 400
     else:
         return jsonify(get_config())
+    
+
+
+@app.route('/led', methods=['POST'])
+def toggle_led():
+    data = request.get_json()
+    action = data.get("action")
+
+    if action not in ["bind", "unbind"]:
+        return "Acción no válida", 400
+
+    try:
+        subprocess.run(["/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh", "1-1", action], check=True)
+        return "USB toggled", 200
+    except Exception as e:
+        print(f"[ERROR] al ejecutar toggle_usb.sh: {e}")
+        return f"Error al ejecutar script: {e}", 500
+
 
 # === MAIN ===
 
