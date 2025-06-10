@@ -32,16 +32,17 @@
         <h1>Gestor de Archivos de Imágenes</h1>
 
         {% if not current_path %}
-    <h3>Carpetas:</h3>
-    <ul>
-        {% for folder in folders %}
-                <li class="folder">
-                    <a href="{{ url_for('galeria', path=folder) }}">📁 {{ folder }}</a>
-                    <form method="POST" action="{{ url_for('eliminar_carpeta') }}" style="display:inline; margin-left:8px;">
-                        <input type="hidden" name="carpeta" value="{{ folder }}">
-                        <button class="button" type="submit">🗑️ Eliminar carpeta</button>
-                    </form>
-                </li>
+            <h3>Carpetas:</h3>
+
+            <ul>
+                {% for folder in folders %}
+                    <li class="folder">
+                        <a href="{{ url_for('galeria', path=folder) }}">📁 {{ folder }}</a>
+                        <form method="POST" action="{{ url_for('eliminar_carpeta') }}" style="display:inline; margin-left:8px;">
+                            <input type="hidden" name="carpeta" value="{{ folder }}">
+                            <button class="button" type="submit">🗑️ Eliminar carpeta</button>
+                        </form>
+                    </li>
                 {% endfor %}
             </ul>
 
@@ -49,7 +50,11 @@
                 <input type="text" name="carpeta" placeholder="Nombre de nueva carpeta" required>
                 <button class="button" type="submit">➕ Crear carpeta</button>
             </form>
+
+            <br>
+            <a class="button" href="{{ url_for('index') }}">⬅️ Volver al Panel</a>
         {% else %}
+
             <h3>Contenido de: /{{ current_path }}</h3>
             <a class="button" href="{{ url_for('galeria_root') }}">⬅️ Volver a carpetas</a>
             <div class="grid">
