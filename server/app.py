@@ -171,7 +171,7 @@ def toggle_usb(device_id):
     if action not in ['on', 'off']:
         return "Acción no válida", 400
 
-    cmd = ['sudo', 'home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind' if action == 'off' else 'bind']
+    cmd = ['home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind' if action == 'off' else 'bind']
 
     try:
         subprocess.run(cmd, check=True)
