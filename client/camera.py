@@ -16,7 +16,10 @@ def take_photo(rpi_id="rpi-1"):
 
     if led_auto:
         try:
-            subprocess.run(['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'bind'], check=True)
+            subprocess.run(
+                ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'bind'],
+                check=True
+            )
             print("[LED] Encendido antes de captura")
             time.sleep(1)
         except Exception as e:
@@ -50,7 +53,10 @@ def take_photo(rpi_id="rpi-1"):
     if led_auto:
         try:
             time.sleep(1)
-            subprocess.run(['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind'], check=True)
+            subprocess.run(
+                ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind'],
+                check=True
+            )
             print("[LED] Apagado después de captura")
         except Exception as e:
             print(f"[LED] Error al apagar LED automáticamente: {e}")
