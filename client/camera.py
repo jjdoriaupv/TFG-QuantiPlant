@@ -8,7 +8,7 @@ from config_state import get_config
 
 def toggle_led(action):
     try:
-        subprocess.run(['/home/pi/toggle_usb.sh', '1-1', action], check=True)
+        subprocess.run(['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', action], check=True)
     except Exception as e:
         print(f"[LED] Error al {action} LED: {e}")
 
