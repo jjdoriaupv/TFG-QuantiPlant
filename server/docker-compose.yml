@@ -9,4 +9,5 @@ services:
       - "5001:5001"
     volumes:
       - ./server/uploads:/app/uploads
+      - /home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh:/toggle_usb.sh:ro
     restart: unless-stopped
