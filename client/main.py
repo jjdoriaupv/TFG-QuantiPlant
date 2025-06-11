@@ -12,14 +12,27 @@ app = Flask(__name__)
 
 @app.route('/foto', methods=['POST'])
 def foto():
-    proyecto = request.form.get('proyecto', 'default') 
+    # 1) Intentamos parsear JSON (cliente puede enviar json={"carpeta":...})
+    payload = request.get_json(silent=True) or {}
+    # 2) Sacamos el nombre de proyecto/carpeta de JSON o form-data
+    proyecto = (
+        payload.get('carpeta') or
+        payload.get('proyecto') or
+        request.form.get('proyecto', 'default')
+    )
     print(f">>> [API] Recibida orden para tomar foto. Proyecto: {proyecto}")
     try:
-        threading.Thread(target=take_photo, kwargs={'proyecto': proyecto}, daemon=True).start()
+        # 3) Lanzamos el hilo pasando el argumento que espera take_photo
+        threading.Thread(
+            target=take_photo,
+            kwargs={'rpi_id': proyecto},
+            daemon=True
+        ).start()
         return "Captura iniciada", 200
     except Exception as e:
         print(f"[ERROR] al ejecutar take_photo: {e}")
         return f"Error al capturar: {e}", 500
+
 
 
 @app.route('/config', methods=['GET', 'POST'])
