@@ -31,7 +31,7 @@ def take_photo(rpi_id="rpi-1"):
 
         try:
             subprocess.run(
-                ["libcamera-jpeg", "--shutter", shutter_time, "-o", tmpfile.name],
+                ["libcamera-jpeg","--nopreview", "--shutter", shutter_time, "-o", tmpfile.name],
                 check=True
             )
             print("[TAKE] Imagen capturada, enviando al servidor...")
