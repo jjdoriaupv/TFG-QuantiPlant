@@ -2,26 +2,24 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-import os
 import shutil
 
-# Importar funciones locales de lógica de negocio
 from core.camera import take_photo
 from core.config_state import get_config, set_config
+from core.auto_capture import start_auto_capture
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'web/uploads'
 
-# Asegurar carpeta de subida
+start_auto_capture()
+
 def ensure_upload_folder():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
 
 ensure_upload_folder()
 
-# Obtener subcarpetas en 'uploads'
 def get_folders():
     return sorted(
         d for d in os.listdir(UPLOAD_FOLDER)
@@ -143,4 +141,3 @@ def config():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
-

@@ -44,3 +44,6 @@ def set_led_auto(value):
     config = load_config()
     config['led_auto'] = bool(value)
     save_config(config)
+
+def set_config(data):
+    save_config(data)
