@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "interval": 10,
+  "exposure": 1000,
+  "led_auto": false
+}
