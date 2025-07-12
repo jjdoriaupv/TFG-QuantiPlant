@@ -8,7 +8,7 @@ import os
 import shutil
 
 # Importar funciones locales de lógica de negocio
-from core.camera import take_picture
+from core.camera import take_photo
 from core.config_state import get_config, set_config
 
 app = Flask(__name__)
@@ -115,7 +115,7 @@ def foto():
     path = os.path.join(UPLOAD_FOLDER, carpeta)
     os.makedirs(path, exist_ok=True)
     try:
-        take_picture(path)
+        take_photo(path)
         return redirect(url_for('galeria', path=carpeta))
     except Exception as e:
         return f"Error al tomar foto: {e}", 500
