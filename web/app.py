@@ -138,5 +138,20 @@ def config():
     config_data = get_config()
     return render_template('config.html', config=config_data)
 
+@app.route('/toggle_usb', methods=['POST'])
+def toggle_usb():
+    action = request.form.get('action')
+    if action not in ['on', 'off']:
+        return "Acción no válida", 400
+    try:
+        subprocess.run(
+            ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'bind' if action == 'on' else 'unbind'],
+            check=True
+        )
+        return redirect(url_for('config'))
+    except Exception as e:
+        return f"Error al ejecutar toggle_usb: {e}", 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

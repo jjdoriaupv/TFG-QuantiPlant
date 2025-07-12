@@ -2,49 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Configurar {{ device_id }}</title>
+    <title>Configuración de la Cámara</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Configuración - {{ device_id }}</h1>
-        <form method="POST">
+        <h1>Configuración de la Cámara</h1>
+
+        <form method="POST" action="{{ url_for('config') }}">
+            <label for="interval">Intervalo (segundos):</label>
+            <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
+
+            <label for="exposure">Exposición (microsegundos):</label>
+            <input type="number" name="exposure" min="1" max="60000" value="{{ config.exposure }}" required><br>
+
             <label>
                 <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>
-                Captura automática
-            </label>
-            <br><br>
-
-            <label>Intervalo (segundos):
-                <input type="number" name="interval" min="1" value="{{ config.interval }}">
-            </label>
-            <br><br>
-
-            <label>Exposición (ms):
-                <input type="number" name="exposure" min="1" max="60000" value="{{ config.exposure }}">
-            </label>
-            <br><br>
+                Captura automática habilitada
+            </label><br>
 
             <label>
                 <input type="checkbox" name="led_auto" {% if config.led_auto %}checked{% endif %}>
-                Encendido automático del LED
-            </label>
-            <br><br>
+                Control automático del LED
+            </label><br><br>
 
-            <button class="button" type="submit">Guardar</button>
+            <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
 
-        <form method="POST" action="{{ url_for('toggle_usb', device_id=device_id) }}">
-            <input type="hidden" name="action" value="off">
-            <button class="button" type="submit">💡 Apagar LED (USB)</button>
+        <br><br>
+
+        <form method="POST" action="{{ url_for('toggle_usb') }}">
+            <button class="button" type="submit" name="action" value="on">🔌 Encender LED</button>
+            <button class="button" type="submit" name="action" value="off">🔌 Apagar LED</button>
         </form>
 
-        <form method="POST" action="{{ url_for('toggle_usb', device_id=device_id) }}">
-            <input type="hidden" name="action" value="on">
-            <button class="button" type="submit">💡 Encender LED (USB)</button>
-        </form>
-
-        <a class="button" href="{{ url_for('index') }}">⬅️ Volver</a>
+        <br>
+        <a class="button" href="{{ url_for('index') }}">⬅️ Volver al Panel</a>
     </div>
 </body>
 </html>
