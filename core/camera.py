@@ -30,7 +30,7 @@ def take_photo(path="web/uploads/default"):
 
     try:
         subprocess.run(
-            ["libcamera-jpeg", "--shutter", shutter_time, "-o", filepath],
+            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", filepath],
             check=True
         )
         print(f"[TAKE] Imagen guardada: {filepath}")
