@@ -2,7 +2,7 @@ import subprocess
 from datetime import datetime
 import time
 import os
-from config_state import get_config
+from core.config_state import get_config
 
 def take_photo(path="web/uploads/default"):
     print(f"[TAKE] Capturando imagen en: {path}")

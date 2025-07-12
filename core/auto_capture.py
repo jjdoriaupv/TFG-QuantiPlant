@@ -1,7 +1,7 @@
 import threading
 import time
-from camera import take_photo
-from config_state import get_config
+from core.camera import take_photo
+from core.config_state import get_config
 
 def loop():
     while True:
