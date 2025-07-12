@@ -3,8 +3,8 @@ import os
 import shutil
 
 # Importar funciones locales de lógica de negocio
-from app.camera import take_picture
-from app.config_state import get_config, set_config
+from core.camera import take_picture
+from core.config_state import get_config, set_config
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'web/uploads'
