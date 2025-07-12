@@ -43,7 +43,7 @@ def take_photo(path="web/uploads/default"):
             try:
                 time.sleep(1)
                 subprocess.run(
-                    ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'unbind'],
+                    ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', 'unbind'],
                     check=True
                 )
                 print("[LED] Apagado automático")
