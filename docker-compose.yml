@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+    container_name: quantiplant-server
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./web/uploads:/app/web/uploads
+      - /home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh:/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh:ro
+      - ./config.json:/app/config.json
+    restart: unless-stopped
+    privileged: true
+

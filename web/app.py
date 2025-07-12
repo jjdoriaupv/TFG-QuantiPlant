@@ -1,23 +1,22 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
-import requests
-import json
 import shutil
 
-app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-RASPBERRIES_FILE = 'raspberries.json'
+# Importar funciones locales de lógica de negocio
+from app.camera import take_picture
+from app.config_state import get_config, set_config
 
+app = Flask(__name__)
+UPLOAD_FOLDER = 'web/uploads'
+
+# Asegurar carpeta de subida
 def ensure_upload_folder():
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
 
 ensure_upload_folder()
 
-def get_raspberry_list():
-    with open(RASPBERRIES_FILE) as f:
-        return json.load(f)
-
+# Obtener subcarpetas en 'uploads'
 def get_folders():
     return sorted(
         d for d in os.listdir(UPLOAD_FOLDER)
@@ -26,9 +25,8 @@ def get_folders():
 
 @app.route('/')
 def index():
-    raspberries = get_raspberry_list()
     folders = get_folders()
-    return render_template('index.html', raspberries=raspberries, folders=folders)
+    return render_template('index.html', folders=folders)
 
 @app.route('/crear_carpeta', methods=['POST'])
 def crear_carpeta():
@@ -97,8 +95,7 @@ def mover_imagen():
 @app.route('/upload', methods=['POST'])
 def upload():
     file = request.files.get('image')
-    rpi_id = request.form.get('rpi_id', 'unknown')
-    carpeta = request.form.get('carpeta', rpi_id)
+    carpeta = request.form.get('carpeta', 'default')
     path = os.path.join(UPLOAD_FOLDER, carpeta)
     os.makedirs(path, exist_ok=True)
     if file:
@@ -107,75 +104,38 @@ def upload():
         return "OK", 200
     return "No file received", 400
 
-@app.route('/foto/<device_id>', methods=['POST'])
-def foto(device_id):
-    carpeta = request.form.get('carpeta', device_id)
-    raspberries = get_raspberry_list()
-    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
-    if not raspberry:
-        return "Raspberry no encontrada", 404
+@app.route('/foto', methods=['POST'])
+def foto():
+    carpeta = request.form.get('carpeta', 'default')
+    path = os.path.join(UPLOAD_FOLDER, carpeta)
+    os.makedirs(path, exist_ok=True)
     try:
-        res = requests.post(
-            f"http://{raspberry['host']}:6000/foto",
-            json={"carpeta": carpeta}
-        )
-        if res.status_code == 200:
-            return redirect(url_for('galeria', path=carpeta))
+        take_picture(path)
+        return redirect(url_for('galeria', path=carpeta))
     except Exception as e:
         return f"Error al tomar foto: {e}", 500
-    return "Error desconocido", 500
 
-@app.route('/config/<device_id>', methods=['GET', 'POST'])
-def config(device_id):
-    raspberries = get_raspberry_list()
-    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
-    if not raspberry:
-        return "Raspberry no encontrada", 404
+@app.route('/config', methods=['GET', 'POST'])
+def config():
     if request.method == 'POST':
         interval = int(request.form['interval'])
         enabled = 'enabled' in request.form
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
         led_auto = 'led_auto' in request.form
         try:
-            requests.post(
-                f"http://{raspberry['host']}:6000/config",
-                json={
-                    "enabled": enabled,
-                    "interval": interval,
-                    "exposure": exposure,
-                    "led_auto": led_auto
-                }
-            )
+            set_config({
+                "enabled": enabled,
+                "interval": interval,
+                "exposure": exposure,
+                "led_auto": led_auto
+            })
         except Exception as e:
-            return f"Error configurando {device_id}: {e}", 500
+            return f"Error guardando configuración: {e}", 500
         return redirect(url_for('index'))
-    try:
-        res = requests.get(f"http://{raspberry['host']}:6000/config")
-        config_data = res.json()
-    except Exception:
-        config_data = {"enabled": False, "interval": 10, "exposure": 1000, "led_auto": False}
-    return render_template('config.html', config=config_data, device_id=device_id)
 
-@app.route('/toggle_usb/<device_id>', methods=['POST'])
-def toggle_usb(device_id):
-    action = request.form.get('action')
-    if action not in ['on', 'off']:
-        return "Acción no válida", 400
-    raspberries = get_raspberry_list()
-    raspberry = next((r for r in raspberries if r['id'] == device_id), None)
-    if not raspberry:
-        return "Raspberry no encontrada", 404
-    try:
-        res = requests.post(
-            f"http://{raspberry['host']}:6000/led",
-            json={"action": "unbind" if action == "off" else "bind"}
-        )
-        if res.status_code == 200:
-            return redirect(url_for('config', device_id=device_id))
-        else:
-            return f"Error en Raspberry: {res.text}", 500
-    except Exception as e:
-        return f"Error al contactar con la Raspberry: {e}", 500
+    config_data = get_config()
+    return render_template('config.html', config=config_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
+
