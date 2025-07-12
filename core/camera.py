@@ -16,7 +16,7 @@ def take_photo(path="web/uploads/default"):
     if led_auto:
         try:
             subprocess.run(
-                ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'bind'],
+                ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', 'bind'],
                 check=True
             )
             print("[LED] Encendido automático")

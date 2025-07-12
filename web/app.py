@@ -147,7 +147,7 @@ def toggle_usb():
         return "Acción no válida", 400
     try:
         subprocess.run(
-            ['/home/jeremy/TFG-QuantiPlant/client/toggle_usb.sh', '1-1', 'bind' if action == 'on' else 'unbind'],
+            ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', 'bind' if action == 'on' else 'unbind'],
             check=True
         )
         return redirect(url_for('config'))
