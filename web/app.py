@@ -28,8 +28,7 @@ def get_folders():
 
 @app.route('/')
 def index():
-    folders = get_folders()
-    return render_template('index.html', folders=folders)
+    return render_template('index.html')
 
 @app.route('/crear_carpeta', methods=['POST'])
 def crear_carpeta():
