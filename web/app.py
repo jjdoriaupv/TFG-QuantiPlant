@@ -173,7 +173,7 @@ def toggle_usb():
     except Exception as e:
         return f"Error al ejecutar toggle_usb: {e}", 500
     
-@app.route('/descargar_carpeta/<path:folder>')
+@app.route('/descargar_carpeta/<string:folder>')
 def descargar_carpeta(folder):
     carpeta_path = os.path.join(UPLOAD_FOLDER, folder)
     if not os.path.exists(carpeta_path):
