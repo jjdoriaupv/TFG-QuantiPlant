@@ -15,10 +15,7 @@
                     <span>📁</span>
                     <a href="{{ url_for('galeria', path=carpeta) }}">{{ carpeta }}</a>
 
-                    <form method="GET" action="{{ url_for('descargar_carpeta', folder=carpeta|urlencode) }}">
-                        <button class="button green" type="submit">⬇️ Descargar</button>
-                    </form>
-
+                    <a class="button green" href="{{ url_for('descargar_carpeta', folder=carpeta|urlencode) }}">⬇️ Descargar</a>
                     <form method="POST" action="{{ url_for('eliminar_carpeta') }}">
                         <input type="hidden" name="carpeta" value="{{ carpeta }}">
                         <button class="button green" type="submit">🗑️ Eliminar carpeta</button>
