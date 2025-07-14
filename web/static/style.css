@@ -1,5 +1,4 @@
-/* style.css */
-
+/* General */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f4f6f8;
@@ -26,6 +25,7 @@ form {
     margin-bottom: 15px;
 }
 
+/* Inputs y Select */
 input[type="text"],
 input[type="number"],
 select {
@@ -33,12 +33,14 @@ select {
     width: 100%;
     max-width: 300px;
     margin-top: 4px;
+    margin-bottom: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    margin-bottom: 10px;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
+/* Botones */
 .button {
     background-color: #4CAF50;
     color: white;
@@ -54,97 +56,6 @@ select {
 
 .button:hover {
     background-color: #45a049;
-}
-
-.device {
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #fafafa;
-    margin-bottom: 20px;
-}
-
-ul {
-    padding-left: 20px;
-}
-
-ul li {
-    margin-bottom: 6px;
-}
-
-select {
-    cursor: pointer;
-}
-
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: flex-start;
-}
-
-.grid-item {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    width: 200px;
-    background: white;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-.grid-item img {
-    width: 100%;
-    height: auto;
-    border-bottom: 1px solid #eee;
-}
-
-.grid-item form,
-.grid-item a {
-    margin: 10px;
-}
-
-/* Estilo del interruptor */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #4CAF50;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
 }
 
 .green {
@@ -163,8 +74,48 @@ input:checked + .slider:before {
     background-color: #0069d9;
 }
 
-.folder-list {
+/* Estructuras */
+ul {
+    padding-left: 20px;
     list-style: none;
+    margin: 0;
+}
+
+ul li {
+    margin-bottom: 6px;
+}
+
+/* Galería */
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.grid-item {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 200px;
+    background: white;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #eee;
+}
+
+.grid-item form,
+.grid-item a {
+    margin: 10px;
+}
+
+/* Carpetas */
+.folder-list {
     padding-left: 0;
 }
 
@@ -186,3 +137,59 @@ input:checked + .slider:before {
     display: flex;
     gap: 10px;
 }
+
+/* Otros bloques */
+.device {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #fafafa;
+    margin-bottom: 20px;
+}
+
+/* Estilo del interruptor */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
