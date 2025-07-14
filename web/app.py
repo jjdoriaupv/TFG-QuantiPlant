@@ -1,15 +1,13 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file
 import shutil
-
 from core.camera import take_photo
 from core.config_state import get_config, set_config
 from core.auto_capture import start_auto_capture
-
 import subprocess
+import zipfile
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'web/uploads'
@@ -173,6 +171,25 @@ def toggle_usb():
         return redirect(url_for('config'))
     except Exception as e:
         return f"Error al ejecutar toggle_usb: {e}", 500
+    
+@app.route('/descargar_carpeta/<path:folder>')
+def descargar_carpeta(folder):
+    carpeta_path = os.path.join(UPLOAD_FOLDER, folder)
+    if not os.path.exists(carpeta_path):
+        return "Carpeta no encontrada", 404
+
+    memoria_zip = io.BytesIO()
+    with zipfile.ZipFile(memoria_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(carpeta_path):
+            for file in files:
+                abs_path = os.path.join(root, file)
+                rel_path = os.path.relpath(abs_path, carpeta_path)
+                zipf.write(abs_path, arcname=rel_path)
+    memoria_zip.seek(0)
+
+    nombre_zip = f"{folder.replace('/', '_')}.zip"
+    return send_file(memoria_zip, mimetype='application/zip', as_attachment=True, download_name=nombre_zip)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
