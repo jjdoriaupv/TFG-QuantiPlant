@@ -8,7 +8,8 @@ default_config = {
     'interval': 10,
     'exposure': 1000,
     'led_auto': False,
-    'max_photos': 0
+    'max_photos': 0,
+    'save_folder': 'default'
 }
 
 def load_config():

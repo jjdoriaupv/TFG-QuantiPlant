@@ -131,13 +131,16 @@ def config():
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
         led_auto = 'led_auto' in request.form
         max_photos = int(request.form.get('max_photos', 0))
+        save_folder = request.form.get('save_folder', 'default')
+
         try:
             set_config({
                 "enabled": enabled,
                 "interval": interval,
                 "exposure": exposure,
                 "led_auto": led_auto,
-                "max_photos": max_photos
+                "max_photos": max_photos,
+                "save_folder": save_folder
             })
         except Exception as e:
             return f"Error guardando configuración: {e}", 500
@@ -146,6 +149,7 @@ def config():
     config_data = get_config()
     led_state = is_usb_bound()
     return render_template('config.html', config=config_data, led_state=led_state)
+
 
 @app.route('/toggle_usb', methods=['POST'])
 def toggle_usb():

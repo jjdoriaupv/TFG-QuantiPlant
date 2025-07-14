@@ -4,11 +4,15 @@ import time
 import os
 from core.config_state import get_config
 
-def take_photo(path="web/uploads/default"):
+def take_photo(path=None):
+    config = get_config()
+    if path is None:
+        folder = config.get('save_folder', 'default')
+        path = os.path.join("web/uploads", folder)
+
     print(f"[TAKE] Capturando imagen en: {path}")
     os.makedirs(path, exist_ok=True)
 
-    config = get_config()
     exposure = config.get('exposure', 1000)
     led_auto = config.get('led_auto', False)
     shutter_time = str(exposure * 1000)
@@ -49,3 +53,4 @@ def take_photo(path="web/uploads/default"):
                 print("[LED] Apagado automático")
             except Exception as e:
                 print(f"[LED] Error al apagar: {e}")
+
