@@ -9,26 +9,25 @@
     <div class="container">
         <h1>Gestor de Archivos de Imágenes</h1>
         <p>Carpetas:</p>
-    <ul>
-        {% for carpeta in folders %}
-            <li style="margin-bottom: 10px;">
-                <span style="margin-right: 10px;">📁</span>
-                <a href="{{ url_for('galeria', path=carpeta) }}" style="margin-right: 20px;">{{ carpeta }}</a>
+        <ul>
+            {% for carpeta in folders %}
+                <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span>📁</span>
+                    <a href="{{ url_for('galeria', path=carpeta) }}">{{ carpeta }}</a>
 
-                <form method="GET" action="{{ url_for('descargar_carpeta', folder=carpeta) }}" style="display:inline;">
-                    <button class="button green" type="submit">⬇️ Descargar</button>
-                </form>
+                    <form method="GET" action="{{ url_for('descargar_carpeta', folder=carpeta) }}">
+                        <button class="button green" type="submit">⬇️ Descargar</button>
+                    </form>
 
-                <form method="POST" action="{{ url_for('eliminar_carpeta') }}" style="display:inline; margin-left: 10px;">
-                    <input type="hidden" name="carpeta" value="{{ carpeta }}">
-                    <button class="button green" type="submit">🗑️ Eliminar carpeta</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+                    <form method="POST" action="{{ url_for('eliminar_carpeta') }}">
+                        <input type="hidden" name="carpeta" value="{{ carpeta }}">
+                        <button class="button green" type="submit">🗑️ Eliminar carpeta</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
 
-
-        <form method="POST" action="{{ url_for('crear_carpeta') }}">
+        <form method="POST" action="{{ url_for('crear_carpeta') }}" style="display: flex; gap: 10px; margin-top: 20px;">
             <input type="text" name="carpeta" placeholder="Nombre de nueva carpeta" required>
             <button class="button green" type="submit">➕ Crear carpeta</button>
         </form>
@@ -38,5 +37,3 @@
     </div>
 </body>
 </html>
-
-
