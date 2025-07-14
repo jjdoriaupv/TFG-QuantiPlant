@@ -162,3 +162,27 @@ input:checked + .slider:before {
 .blue:hover {
     background-color: #0069d9;
 }
+
+.folder-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.folder {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.folder-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.folder-actions {
+    display: flex;
+    gap: 10px;
+}
