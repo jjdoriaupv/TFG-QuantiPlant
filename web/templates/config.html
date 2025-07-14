@@ -8,7 +8,6 @@
 <body>
     <div class="container">
         <h1>Configuración de la Cámara</h1>
-
         <form method="POST" action="{{ url_for('config') }}">
             <label for="interval">Intervalo (segundos):</label>
             <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
@@ -29,25 +28,23 @@
                 Control automático del LED
             </label><br>
 
-            <br>
-
-            <div class="led-switch-container">
-                <label for="led-switch">🔌 LED:</label>
-                <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
-                    <label class="switch">
-                        <input type="checkbox" name="led" id="led-switch" onchange="document.getElementById('led-switch-form').submit()" {% if led_state %}checked{% endif %}>
-                        <span class="slider round"></span>
-                    </label>
-                </form>
-            </div>
-
             <br><br>
-
             <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
+
+        <div class="led-switch-container">
+            <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
+                <label for="led-switch">🔌 LED:</label>
+                <label class="switch">
+                    <input type="checkbox" name="led" id="led-switch" onchange="document.getElementById('led-switch-form').submit()" {% if led_state %}checked{% endif %}>
+                    <span class="slider round"></span>
+                </label>
+            </form>
+        </div>
 
         <br>
         <a class="button" href="{{ url_for('index') }}">⬅️ Volver al Panel</a>
     </div>
 </body>
 </html>
+
