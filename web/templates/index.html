@@ -12,10 +12,9 @@
         <form method="POST" action="{{ url_for('foto') }}">
             <input type="hidden" name="carpeta" value="default">
             <button class="button" type="submit">📸 Tomar Foto</button>
+            <a class="button" href="{{ url_for('galeria_root') }}">🖼️ Ver Galería</a>
+            <a class="button" href="{{ url_for('config') }}">⚙️ Configurar Cámara</a>
         </form>
-
-        <a class="button" href="{{ url_for('galeria_root') }}">🖼️ Ver Galería</a>
-        <a class="button" href="{{ url_for('config') }}">⚙️ Configurar Cámara</a>
     </div>
 </body>
 </html>

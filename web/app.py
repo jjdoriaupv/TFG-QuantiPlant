@@ -130,12 +130,14 @@ def config():
         enabled = 'enabled' in request.form
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
         led_auto = 'led_auto' in request.form
+        max_photos = int(request.form.get('max_photos', 0))
         try:
             set_config({
                 "enabled": enabled,
                 "interval": interval,
                 "exposure": exposure,
-                "led_auto": led_auto
+                "led_auto": led_auto,
+                "max_photos": max_photos
             })
         except Exception as e:
             return f"Error guardando configuración: {e}", 500

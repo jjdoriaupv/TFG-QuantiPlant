@@ -16,6 +16,9 @@
             <label for="exposure">Exposición (microsegundos):</label>
             <input type="number" name="exposure" min="1" max="60000" value="{{ config.exposure }}" required><br>
 
+            <label for="max_photos">Número máximo de fotos (0 = infinito):</label>
+            <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
+
             <label>
                 <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>
                 Captura automática habilitada

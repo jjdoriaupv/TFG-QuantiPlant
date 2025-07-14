@@ -7,7 +7,8 @@ default_config = {
     'enabled': False,
     'interval': 10,
     'exposure': 1000,
-    'led_auto': False
+    'led_auto': False,
+    'max_photos': 0
 }
 
 def load_config():
