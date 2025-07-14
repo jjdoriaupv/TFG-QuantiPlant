@@ -7,6 +7,9 @@
     <style>
         .folder {
             margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .grid {
             display: flex;
@@ -38,7 +41,8 @@
                 {% for folder in folders %}
                     <li class="folder">
                         <a href="{{ url_for('galeria', path=folder) }}">📁 {{ folder }}</a>
-                        <form method="POST" action="{{ url_for('eliminar_carpeta') }}" style="display:inline; margin-left:8px;">
+                        <a class="button" href="{{ url_for('descargar_carpeta', folder=folder|urlencode) }}">⬇️ Descargar</a>
+                        <form method="POST" action="{{ url_for('eliminar_carpeta') }}" style="display:inline;">
                             <input type="hidden" name="carpeta" value="{{ folder }}">
                             <button class="button" type="submit">🗑️ Eliminar carpeta</button>
                         </form>
