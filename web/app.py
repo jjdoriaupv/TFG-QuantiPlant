@@ -28,6 +28,10 @@ def get_folders():
         if os.path.isdir(os.path.join(UPLOAD_FOLDER, d))
     )
 
+def is_usb_bound():
+    path = "/sys/bus/usb/drivers/usb/1-1"
+    return os.path.exists(path)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -138,22 +142,26 @@ def config():
         return redirect(url_for('index'))
 
     config_data = get_config()
-    return render_template('config.html', config=config_data)
+    led_state = is_usb_bound()
+    return render_template('config.html', config=config_data, led_state=led_state)
 
 @app.route('/toggle_usb', methods=['POST'])
 def toggle_usb():
     led_on = 'led' in request.form
-    action = 'on' if led_on else 'off'
+    usb_is_bound = is_usb_bound()
+
+    if led_on == usb_is_bound:
+        return redirect(url_for('config'))
+
+    action = 'bind' if led_on else 'unbind'
     try:
         subprocess.run(
-            ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', 'bind' if action == 'on' else 'unbind'],
+            ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', action],
             check=True
         )
         return redirect(url_for('config'))
     except Exception as e:
         return f"Error al ejecutar toggle_usb: {e}", 500
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
