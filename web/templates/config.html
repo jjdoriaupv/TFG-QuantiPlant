@@ -18,8 +18,16 @@
             <label for="max_photos">Número de fotos a tomar:</label>
             <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
 
-            <label for="save_folder">Carpeta de destino:</label>
-            <input type="text" name="save_folder" value="{{ config.save_folder }}"><br>
+            <label for="folder_select">Elegir carpeta existente:</label>
+            <select name="folder_select">
+                <option value="">-- Ninguna --</option>
+                {% for folder in folders %}
+                    <option value="{{ folder }}" {% if folder == config.save_folder %}selected{% endif %}>{{ folder }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="save_folder">O escribir nueva carpeta:</label>
+            <input type="text" name="save_folder" value=""><br>
 
             <label>
                 <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>

@@ -131,7 +131,10 @@ def config():
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
         led_auto = 'led_auto' in request.form
         max_photos = int(request.form.get('max_photos', 0))
-        save_folder = request.form.get('save_folder', 'default')
+
+        folder_input = request.form.get('save_folder', '').strip()
+        folder_select = request.form.get('folder_select', '').strip()
+        save_folder = folder_input if folder_input else (folder_select if folder_select else 'default')
 
         try:
             set_config({
@@ -148,7 +151,9 @@ def config():
 
     config_data = get_config()
     led_state = is_usb_bound()
-    return render_template('config.html', config=config_data, led_state=led_state)
+    folders = get_folders()
+    return render_template('config.html', config=config_data, led_state=led_state, folders=folders)
+
 
 
 @app.route('/toggle_usb', methods=['POST'])
