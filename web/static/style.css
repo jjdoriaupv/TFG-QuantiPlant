@@ -147,3 +147,18 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+.green {
+    background-color: #4CAF50;
+}
+
+.green:hover {
+    background-color: #45a049;
+}
+
+.blue {
+    background-color: #007BFF;
+}
+
+.blue:hover {
+    background-color: #0069d9;
+}
