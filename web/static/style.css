@@ -41,7 +41,9 @@ select {
 }
 
 /* Botones */
-.button {
+.button,
+.button:visited,
+.folder-actions form button {
     background-color: #4CAF50;
     color: white;
     padding: 10px 18px;
@@ -49,9 +51,15 @@ select {
     border-radius: 6px;
     cursor: pointer;
     text-decoration: none;
-    display: inline-block;
-    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    font-size: 14px;
+    line-height: 1;
     transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .button:hover {
@@ -111,7 +119,8 @@ ul li {
 
 .grid-item form,
 .grid-item a {
-    margin: 10px;
+    margin: 10px 0;
+    display: block;
 }
 
 /* Carpetas */
@@ -192,4 +201,3 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(26px);
 }
-

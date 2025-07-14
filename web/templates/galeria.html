@@ -23,12 +23,13 @@
                             <a class="button" href="{{ url_for('descargar_carpeta', folder=folder) }}">⬇️ Descargar</a>
                             <form method="POST" action="{{ url_for('eliminar_carpeta') }}">
                                 <input type="hidden" name="carpeta" value="{{ folder }}">
-                                <button class="button" type="submit">🗑️ Eliminar carpeta</button>
+                                <button type="submit" class="button">🗑️ Eliminar carpeta</button>
                             </form>
                         </div>
                     </li>
                 {% endfor %}
             </ul>
+
 
             <form method="POST" action="{{ url_for('crear_carpeta') }}">
                 <input type="text" name="carpeta" placeholder="Nombre de nueva carpeta" required>
