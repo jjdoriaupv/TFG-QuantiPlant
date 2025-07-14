@@ -8,6 +8,7 @@ from core.config_state import get_config, set_config
 from core.auto_capture import start_auto_capture
 import subprocess
 import zipfile
+import io
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'web/uploads'
