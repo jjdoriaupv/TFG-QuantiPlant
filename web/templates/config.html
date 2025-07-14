@@ -24,21 +24,23 @@
             <label>
                 <input type="checkbox" name="led_auto" {% if config.led_auto %}checked{% endif %}>
                 Control automático del LED
-            </label><br><br>
+            </label><br>
 
-            <button class="button" type="submit">💾 Guardar Configuración</button>
-        </form>
+            <br>
 
-        <br><br>
-
-        <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
             <div class="led-switch-container">
                 <label for="led-switch">🔌 LED:</label>
-                <label class="switch">
-                    <input type="checkbox" name="led" id="led-switch" onchange="document.getElementById('led-switch-form').submit()" {% if led_state %}checked{% endif %}>
-                    <span class="slider round"></span>
-                </label>
+                <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
+                    <label class="switch">
+                        <input type="checkbox" name="led" id="led-switch" onchange="document.getElementById('led-switch-form').submit()" {% if led_state %}checked{% endif %}>
+                        <span class="slider round"></span>
+                    </label>
+                </form>
             </div>
+
+            <br><br>
+
+            <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
 
         <br>
