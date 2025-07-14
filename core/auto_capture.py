@@ -1,7 +1,7 @@
 import threading
 import time
 from core.camera import take_photo
-from core.config_state import get_config
+from core.config_state import get_config, save_config
 
 def loop():
     taken_photos = 0
