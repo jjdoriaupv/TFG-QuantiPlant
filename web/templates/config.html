@@ -18,6 +18,9 @@
             <label for="max_photos">Número de fotos a tomar:</label>
             <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
 
+            <label for="save_folder">Carpeta de destino:</label>
+            <input type="text" name="save_folder" value="{{ config.save_folder }}"><br>
+
             <label>
                 <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>
                 Captura automática habilitada
@@ -47,4 +50,5 @@
     </div>
 </body>
 </html>
+
 
