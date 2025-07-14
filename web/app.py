@@ -142,9 +142,8 @@ def config():
 
 @app.route('/toggle_usb', methods=['POST'])
 def toggle_usb():
-    action = request.form.get('action')
-    if action not in ['on', 'off']:
-        return "Acción no válida", 400
+    led_on = 'led' in request.form
+    action = 'on' if led_on else 'off'
     try:
         subprocess.run(
             ['/home/jeremy/TFG-QuantiPlant/scripts/toggle_usb.sh', '1-1', 'bind' if action == 'on' else 'unbind'],
@@ -153,6 +152,7 @@ def toggle_usb():
         return redirect(url_for('config'))
     except Exception as e:
         return f"Error al ejecutar toggle_usb: {e}", 500
+
 
 
 if __name__ == '__main__':

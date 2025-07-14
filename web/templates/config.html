@@ -31,9 +31,14 @@
 
         <br><br>
 
-        <form method="POST" action="{{ url_for('toggle_usb') }}">
-            <button class="button" type="submit" name="action" value="on">🔌 Encender LED</button>
-            <button class="button" type="submit" name="action" value="off">🔌 Apagar LED</button>
+        <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
+            <div class="led-switch-container">
+                <label for="led-switch">🔌 LED:</label>
+                <label class="switch">
+                    <input type="checkbox" name="led" id="led-switch" onchange="document.getElementById('led-switch-form').submit()" {% if led_state %}checked{% endif %}>
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </form>
 
         <br>
