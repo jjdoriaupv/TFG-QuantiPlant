@@ -29,27 +29,14 @@ def take_photo(path=None):
             print(f"[LED] Error al encender: {e}")
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    raw_filename = f"{timestamp}_raw.jpg"
-    final_filename = f"{timestamp}.png"  # ← PNG
-
-    raw_filepath = os.path.join(path, raw_filename)
+    final_filename = f"{timestamp}.png"
     final_filepath = os.path.join(path, final_filename)
 
     try:
-        # Captura inicial en JPG
         subprocess.run(
-            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", raw_filepath],
+            ["libcamera-still", "--shutter", shutter_time, "--nopreview", "--encoding", "png", "-o", final_filepath],
             check=True
         )
-
-        # Voltear y convertir a PNG
-        subprocess.run(
-            ["convert", raw_filepath, "-rotate", "90", final_filepath],
-            check=True
-        )
-
-        # Eliminar el JPG temporal
-        os.remove(raw_filepath)
 
         print(f"[TAKE] Imagen final guardada: {final_filepath}")
         return final_filename
@@ -69,5 +56,3 @@ def take_photo(path=None):
                 print("[LED] Apagado automático")
             except Exception as e:
                 print(f"[LED] Error al apagar: {e}")
-
-
