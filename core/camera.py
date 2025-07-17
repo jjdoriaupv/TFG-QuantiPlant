@@ -29,12 +29,12 @@ def take_photo(path=None):
             print(f"[LED] Error al encender: {e}")
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    final_filename = f"{timestamp}.png"
+    final_filename = f"{timestamp}.jpg"
     final_filepath = os.path.join(path, final_filename)
 
     try:
         subprocess.run(
-            ["libcamera-still", "--shutter", shutter_time, "--nopreview", "--encoding", "png", "-o", final_filepath],
+            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", final_filepath],
             check=True
         )
 
@@ -56,3 +56,4 @@ def take_photo(path=None):
                 print("[LED] Apagado automático")
             except Exception as e:
                 print(f"[LED] Error al apagar: {e}")
+
