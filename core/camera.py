@@ -34,7 +34,7 @@ def take_photo(path=None):
 
     try:
         subprocess.run(
-            ["libcamera-still", "--shutter", shutter_time, "--nopreview", "--encoding", "png", "-o", final_filepath],
+            ["rpicam-still", "--shutter", shutter_time,"--gain 1", "--awbgains 1,1", "immediate", "--nopreview", "--encoding", "png", "-o", final_filepath],
             check=True
         )
 
