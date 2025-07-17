@@ -53,4 +53,3 @@ def take_photo(path=None):
                 print("[LED] Apagado automático")
             except Exception as e:
                 print(f"[LED] Error al apagar: {e}")
-
