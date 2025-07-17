@@ -39,6 +39,11 @@
                 Control automático del LED
             </label><br>
 
+            <label>
+                <input type="checkbox" name="led_enabled" {% if config.get('led_enabled', True) %}checked{% endif %}>
+                El LED debe estar encendido durante captura
+            </label><br>
+
             <br><br>
             <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
@@ -58,5 +63,6 @@
     </div>
 </body>
 </html>
+
 
 
