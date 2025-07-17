@@ -45,6 +45,7 @@ def take_photo(path=None):
                 check=True
             )
             print(f"[TAKE] Imagen final guardada: {final_filepath}")
+            time.sleep(1.5)
             return final_filename
 
         except subprocess.CalledProcessError as e:
