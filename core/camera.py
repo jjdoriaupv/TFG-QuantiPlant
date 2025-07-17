@@ -44,7 +44,7 @@ def take_photo(path=None):
 
         # Voltear y convertir a PNG
         subprocess.run(
-            ["convert", raw_filepath, "-flop", final_filepath],
+            ["convert", raw_filepath, "-rotate", "90", final_filepath],
             check=True
         )
 
