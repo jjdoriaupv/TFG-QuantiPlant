@@ -28,12 +28,13 @@ def loop():
                 if now - last_burst_time >= interval:
                     print(f"[AUTO] Tomando {max_photos} fotos en ráfaga...")
                     exposure = config.get('exposure', 1000000)
-                    delay = (exposure / 1_000_000.0) + 1.0
+                    delay = (exposure / 1_000_000.0) + 5.0  # margen de 5 segundos extra
 
                     for i in range(max_photos):
                         print(f"[AUTO] Captura {i + 1}/{max_photos}")
                         take_photo()
                         if i < max_photos - 1:
+                            print(f"[AUTO] Esperando {delay:.1f} segundos antes de la siguiente captura...")
                             time.sleep(delay)
 
                     last_burst_time = time.time()

@@ -45,7 +45,6 @@ def take_photo(path=None):
                 check=True
             )
             print(f"[TAKE] Imagen final guardada: {final_filepath}")
-            time.sleep(1.5)
             return final_filename
 
         except subprocess.CalledProcessError as e:
@@ -65,5 +64,6 @@ def take_photo(path=None):
                     print("[LED] Apagado automático")
                 except Exception as e:
                     print(f"[LED] Error al apagar: {e}")
+
 
 
