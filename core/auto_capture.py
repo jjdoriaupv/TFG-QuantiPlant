@@ -27,9 +27,16 @@ def loop():
                 now = time.time()
                 if now - last_burst_time >= interval:
                     print(f"[AUTO] Tomando {max_photos} fotos en ráfaga...")
-                    for _ in range(max_photos):
+                    exposure = config.get('exposure', 1000000)
+                    delay = (exposure / 1_000_000.0) + 1.0
+
+                    for i in range(max_photos):
+                        print(f"[AUTO] Captura {i + 1}/{max_photos}")
                         take_photo()
-                    last_burst_time = now
+                        if i < max_photos - 1:
+                            time.sleep(delay)
+
+                    last_burst_time = time.time()
                 else:
                     time.sleep(1)
 
@@ -47,7 +54,6 @@ def loop():
             taken_photos = 0
             last_burst_time = 0
             time.sleep(1)
-
 
 def start_auto_capture():
     t = threading.Thread(target=loop, daemon=True)
