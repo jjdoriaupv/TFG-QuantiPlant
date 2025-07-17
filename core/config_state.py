@@ -8,6 +8,7 @@ default_config = {
     'interval': 10,
     'exposure': 1000,
     'led_auto': False,
+    'led_enabled': True,
     'max_photos': 0,
     'save_folder': 'default'
 }
@@ -16,11 +17,17 @@ def load_config():
     if not os.path.exists(CONFIG_FILE):
         save_config(default_config)
     with open(CONFIG_FILE, 'r') as f:
-        return json.load(f)
+        data = json.load(f)
+
+    for key, value in default_config.items():
+        if key not in data:
+            data[key] = value
+
+    return data
 
 def save_config(data):
     with open(CONFIG_FILE, 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=2)
 
 def get_config():
     return load_config()
@@ -45,6 +52,11 @@ def set_exposure(exposure):
 def set_led_auto(value):
     config = load_config()
     config['led_auto'] = bool(value)
+    save_config(config)
+
+def set_led_enabled(value):
+    config = load_config()
+    config['led_enabled'] = bool(value)
     save_config(config)
 
 def set_config(data):

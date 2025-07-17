@@ -129,6 +129,7 @@ def config():
         enabled = 'enabled' in request.form
         exposure = min(int(request.form.get('exposure', 1000)), 60000)
         led_auto = 'led_auto' in request.form
+        led_enabled = 'led_enabled' in request.form  # <- NUEVO
         max_photos = int(request.form.get('max_photos', 0))
 
         folder_input = request.form.get('save_folder', '').strip()
@@ -141,17 +142,13 @@ def config():
                 "interval": interval,
                 "exposure": exposure,
                 "led_auto": led_auto,
+                "led_enabled": led_enabled,  # <- NUEVO
                 "max_photos": max_photos,
                 "save_folder": save_folder
             })
         except Exception as e:
             return f"Error guardando configuración: {e}", 500
         return redirect(url_for('index'))
-
-    config_data = get_config()
-    led_state = is_usb_bound()
-    folders = get_folders()
-    return render_template('config.html', config=config_data, led_state=led_state, folders=folders)
 
 
 

@@ -2,5 +2,8 @@
   "enabled": false,
   "interval": 10,
   "exposure": 1000,
-  "led_auto": false
+  "led_auto": false,
+  "led_enabled": true,
+  "max_photos": 0,
+  "save_folder": "default"
 }
