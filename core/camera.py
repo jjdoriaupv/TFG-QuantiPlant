@@ -39,11 +39,12 @@ def take_photo(path=None):
 
         try:
             print(f"[DEBUG] Ejecutando: rpicam-still --shutter {shutter_time} --gain 1 --awbgains 1,1 --nopreview --encoding png -o {final_filepath}")
-            subprocess.run(
+            proc = subprocess.Popen(
                 ["rpicam-still", "--shutter", shutter_time, "--gain", "1", "--awbgains", "1,1",
-                 "--nopreview", "--encoding", "png", "-o", final_filepath],
-                check=True
+                "--nopreview", "--encoding", "png", "-o", final_filepath]
             )
+            proc.wait()
+
             print(f"[TAKE] Imagen final guardada: {final_filepath}")
             return final_filename
 
