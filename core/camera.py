@@ -29,19 +29,33 @@ def take_photo(path=None):
             print(f"[LED] Error al encender: {e}")
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    filename = f"{timestamp}.jpg"
-    filepath = os.path.join(path, filename)
+    raw_filename = f"{timestamp}_raw.jpg"
+    final_filename = f"{timestamp}.jpg"
+
+    raw_filepath = os.path.join(path, raw_filename)
+    final_filepath = os.path.join(path, final_filename)
 
     try:
         subprocess.run(
-            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", filepath],
+            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", raw_filepath],
             check=True
         )
-        print(f"[TAKE] Imagen guardada: {filepath}")
-        return filename
+
+        # Voltear horizontalmente usando ImageMagick (convert)
+        subprocess.run(
+            ["convert", raw_filepath, "-flop", final_filepath],
+            check=True
+        )
+
+        os.remove(raw_filepath)
+
+        print(f"[TAKE] Imagen final guardada: {final_filepath}")
+        return final_filename
+
     except Exception as e:
-        print(f"[ERROR] No se pudo capturar imagen: {e}")
+        print(f"[ERROR] No se pudo capturar o procesar la imagen: {e}")
         return None
+
     finally:
         if led_auto:
             try:
@@ -53,3 +67,4 @@ def take_photo(path=None):
                 print("[LED] Apagado automático")
             except Exception as e:
                 print(f"[LED] Error al apagar: {e}")
+
