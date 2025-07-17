@@ -43,8 +43,8 @@ def set_interval(interval):
     save_config(config)
 
 def set_exposure(exposure):
-    if exposure > 60000:
-        exposure = 60000
+    if exposure > 670_000_000:
+        exposure = 670_000_000
     config = load_config()
     config['exposure'] = exposure
     save_config(config)
