@@ -29,12 +29,12 @@ def take_photo(path=None):
             print(f"[LED] Error al encender: {e}")
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    final_filename = f"{timestamp}.jpg"
+    final_filename = f"{timestamp}.png"
     final_filepath = os.path.join(path, final_filename)
 
     try:
         subprocess.run(
-            ["libcamera-jpeg", "--shutter", shutter_time, "--nopreview", "-o", final_filepath],
+            ["libcamera-still", "--shutter", shutter_time, "--nopreview", "--encoding", "png", "-o", final_filepath],
             check=True
         )
 
