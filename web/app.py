@@ -131,6 +131,11 @@ def config():
         led_auto = 'led_auto' in request.form
         led_enabled = 'led_enabled' in request.form
         max_photos = int(request.form.get('max_photos', 0))
+        burst_mode_enabled = 'burst_mode_enabled' in request.form
+        max_intervals = int(request.form.get('max_intervals', 0))
+        burst_count = int(request.form.get('burst_count', 0))
+        interval_between_bursts = int(request.form.get('interval_between_bursts', 3600))
+        burst_interval = int(request.form.get('burst_interval', 60))
 
         folder_input = request.form.get('save_folder', '').strip()
         folder_select = request.form.get('folder_select', '').strip()
@@ -144,7 +149,12 @@ def config():
                 "led_auto": led_auto,
                 "led_enabled": led_enabled,
                 "max_photos": max_photos,
-                "save_folder": save_folder
+                "save_folder": save_folder,
+                "burst_mode_enabled": burst_mode_enabled,
+                "max_intervals": max_intervals,
+                "burst_count": burst_count,
+                "interval_between_bursts": interval_between_bursts,
+                "burst_interval": burst_interval
             })
         except Exception as e:
             return f"Error guardando configuración: {e}", 500
@@ -154,9 +164,6 @@ def config():
     led_state = is_usb_bound()
     folders = get_folders()
     return render_template('config.html', config=config_data, led_state=led_state, folders=folders)
-
-
-
 
 @app.route('/toggle_usb', methods=['POST'])
 def toggle_usb():
@@ -175,7 +182,7 @@ def toggle_usb():
         return redirect(url_for('config'))
     except Exception as e:
         return f"Error al ejecutar toggle_usb: {e}", 500
-    
+
 @app.route('/descargar_carpeta/<string:folder>')
 def descargar_carpeta(folder):
     carpeta_path = os.path.join(UPLOAD_FOLDER, folder)
@@ -194,7 +201,5 @@ def descargar_carpeta(folder):
     nombre_zip = f"{folder.replace('/', '_')}.zip"
     return send_file(memoria_zip, mimetype='application/zip', as_attachment=True, download_name=nombre_zip)
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
-

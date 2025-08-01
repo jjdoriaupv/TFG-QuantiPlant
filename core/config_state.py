@@ -10,7 +10,12 @@ default_config = {
     'led_auto': False,
     'led_enabled': True,
     'max_photos': 0,
-    'save_folder': 'default'
+    'save_folder': 'default',
+    'burst_mode_enabled': False,
+    'max_intervals': 0,
+    'burst_count': 0,
+    'interval_between_bursts': 3600,
+    'burst_interval': 60
 }
 
 def load_config():

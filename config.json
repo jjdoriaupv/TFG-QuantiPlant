@@ -5,5 +5,10 @@
   "led_auto": false,
   "led_enabled": true,
   "max_photos": 0,
-  "save_folder": "default"
+  "save_folder": "default",
+  "burst_mode_enabled": false,
+  "max_intervals": 0,
+  "burst_count": 0,
+  "interval_between_bursts": 3600,
+  "burst_interval": 60
 }

@@ -18,6 +18,23 @@
             <label for="max_photos">Número de fotos a tomar:</label>
             <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
 
+            <label for="burst_mode_enabled">
+                <input type="checkbox" name="burst_mode_enabled" {% if config.burst_mode_enabled %}checked{% endif %}>
+                Usar modo ráfaga avanzada
+            </label><br>
+
+            <label for="max_intervals">Número de intervalos:</label>
+            <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
+
+            <label for="burst_count">Número de fotos por intervalo:</label>
+            <input type="number" name="burst_count" min="0" value="{{ config.burst_count }}"><br>
+
+            <label for="interval_between_bursts">Tiempo entre intervalos (segundos):</label>
+            <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
+
+            <label for="burst_interval">Tiempo entre fotos en ráfaga (segundos):</label>
+            <input type="number" name="burst_interval" min="1" value="{{ config.burst_interval }}"><br>
+
             <label for="folder_select">Elegir carpeta existente:</label>
             <select name="folder_select">
                 <option value="">-- Ninguna --</option>
@@ -63,6 +80,3 @@
     </div>
 </body>
 </html>
-
-
-
