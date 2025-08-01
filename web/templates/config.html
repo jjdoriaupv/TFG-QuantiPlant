@@ -9,18 +9,11 @@
     <div class="container">
         <h1>Configuración de la Cámara</h1>
         <form method="POST" action="{{ url_for('config') }}">
-            <!-- 📷 Configuración General -->
             <fieldset>
                 <legend>📷 Configuración General</legend>
 
-                <label for="interval">Intervalo (segundos):</label>
-                <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
-
                 <label for="exposure">Exposición (microsegundos):</label>
                 <input type="number" name="exposure" min="1" max="670000000" value="{{ config.exposure }}" required><br>
-
-                <label for="max_photos">Número de fotos a tomar:</label>
-                <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
 
                 <label for="folder_select">Elegir carpeta existente:</label>
                 <select name="folder_select">
@@ -34,7 +27,6 @@
                 <input type="text" name="save_folder" value=""><br>
             </fieldset>
 
-            <!-- 📅 Modo Captura Automática por Intervalos -->
             <fieldset>
                 <legend>📅 Captura por Intervalos</legend>
 
@@ -43,6 +35,12 @@
                     Captura automática habilitada
                 </label><br>
 
+                <label for="interval">Intervalo (segundos):</label>
+                <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
+
+                <label for="max_photos">Número de fotos a tomar:</label>
+                <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
+
                 <label for="max_intervals">Número de intervalos:</label>
                 <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
 
@@ -50,7 +48,6 @@
                 <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
             </fieldset>
 
-            <!-- 🔁 Modo Ráfaga Avanzado -->
             <fieldset>
                 <legend>🔁 Captura en Ráfaga</legend>
 
@@ -66,7 +63,6 @@
                 <input type="number" name="burst_interval" min="1" value="{{ config.burst_interval }}"><br>
             </fieldset>
 
-            <!-- 💡 LED -->
             <fieldset>
                 <legend>💡 Configuración del LED</legend>
 
@@ -84,6 +80,7 @@
             <br>
             <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
+
 
 
         <div class="led-switch-container">
