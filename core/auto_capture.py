@@ -4,7 +4,6 @@ from core.camera import take_photo
 from core.config_state import get_config, save_config
 
 def loop():
-    taken_photos = 0
     last_burst_time = 0
     burst_intervals_done = 0
 
@@ -39,7 +38,6 @@ def loop():
                 interval = config.get('interval', 10)
                 led_auto = config.get('led_auto', True)
                 led_enabled = config.get('led_enabled', True)
-
                 burst_mode = not led_enabled and not led_auto
 
                 if max_photos == 0:
@@ -59,15 +57,18 @@ def loop():
                     else:
                         time.sleep(1)
                 else:
-                    if taken_photos < max_photos:
+                    photos_taken = config.get('photos_taken', 0)
+                    if photos_taken < max_photos:
                         take_photo()
-                        taken_photos += 1
+                        config['photos_taken'] = photos_taken + 1
+                        save_config(config)
                         time.sleep(interval)
                     else:
                         config['enabled'] = False
                         save_config(config)
         else:
-            taken_photos = 0
+            config['photos_taken'] = 0
+            save_config(config)
             last_burst_time = 0
             burst_intervals_done = 0
             time.sleep(1)

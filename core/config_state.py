@@ -15,7 +15,8 @@ default_config = {
     'max_intervals': 0,
     'burst_count': 0,
     'interval_between_bursts': 3600,
-    'burst_interval': 60
+    'burst_interval': 60,
+    'photos_taken': 0
 }
 
 def load_config():
@@ -23,11 +24,9 @@ def load_config():
         save_config(default_config)
     with open(CONFIG_FILE, 'r') as f:
         data = json.load(f)
-
     for key, value in default_config.items():
         if key not in data:
             data[key] = value
-
     return data
 
 def save_config(data):
