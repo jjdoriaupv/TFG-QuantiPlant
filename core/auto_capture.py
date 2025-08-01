@@ -6,11 +6,13 @@ from core.config_state import get_config, save_config
 def loop():
     last_burst_time = 0
     burst_intervals_done = 0
+    session_active = False
 
     while True:
         config = get_config()
 
         if config.get('enabled', False):
+            session_active = True
             burst_mode_enabled = config.get('burst_mode_enabled', False)
 
             if burst_mode_enabled:
@@ -30,9 +32,6 @@ def loop():
                 elif burst_intervals_done >= max_intervals:
                     config['enabled'] = False
                     save_config(config)
-                else:
-                    time.sleep(1)
-
             else:
                 max_photos = config.get('max_photos', 0)
                 interval = config.get('interval', 10)
@@ -51,9 +50,10 @@ def loop():
                         delay = (exposure / 1_000_000.0) + 5.0
                         for i in range(max_photos):
                             take_photo()
-                            if i < max_photos - 1:
-                                time.sleep(delay)
+                            time.sleep(delay)
                         last_burst_time = time.time()
+                        config['enabled'] = False
+                        save_config(config)
                     else:
                         time.sleep(1)
                 else:
@@ -67,10 +67,12 @@ def loop():
                         config['enabled'] = False
                         save_config(config)
         else:
-            config['photos_taken'] = 0
-            save_config(config)
-            last_burst_time = 0
-            burst_intervals_done = 0
+            if session_active:
+                config['photos_taken'] = 0
+                save_config(config)
+                session_active = False
+                last_burst_time = 0
+                burst_intervals_done = 0
             time.sleep(1)
 
 def start_auto_capture():
