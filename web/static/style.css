@@ -201,3 +201,18 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(26px);
 }
+
+fieldset {
+    border: 2px solid #ccc;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+}
+
+legend {
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 0 10px;
+    font-size: 1.1em;
+}

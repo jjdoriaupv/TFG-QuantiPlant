@@ -9,61 +9,82 @@
     <div class="container">
         <h1>Configuración de la Cámara</h1>
         <form method="POST" action="{{ url_for('config') }}">
-            <label for="interval">Intervalo (segundos):</label>
-            <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
+            <!-- 📷 Configuración General -->
+            <fieldset>
+                <legend>📷 Configuración General</legend>
 
-            <label for="exposure">Exposición (microsegundos):</label>
-            <input type="number" name="exposure" min="1" max="670000000" value="{{ config.exposure }}" required><br>
+                <label for="interval">Intervalo (segundos):</label>
+                <input type="number" name="interval" min="1" value="{{ config.interval }}" required><br>
 
-            <label for="max_photos">Número de fotos a tomar:</label>
-            <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
+                <label for="exposure">Exposición (microsegundos):</label>
+                <input type="number" name="exposure" min="1" max="670000000" value="{{ config.exposure }}" required><br>
 
-            <label for="burst_mode_enabled">
-                <input type="checkbox" name="burst_mode_enabled" {% if config.burst_mode_enabled %}checked{% endif %}>
-                Usar modo ráfaga avanzada
-            </label><br>
+                <label for="max_photos">Número de fotos a tomar:</label>
+                <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
 
-            <label for="max_intervals">Número de intervalos:</label>
-            <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
+                <label for="folder_select">Elegir carpeta existente:</label>
+                <select name="folder_select">
+                    <option value="">-- Ninguna --</option>
+                    {% for folder in folders %}
+                        <option value="{{ folder }}" {% if folder == config.save_folder %}selected{% endif %}>{{ folder }}</option>
+                    {% endfor %}
+                </select><br>
 
-            <label for="burst_count">Número de fotos por intervalo:</label>
-            <input type="number" name="burst_count" min="0" value="{{ config.burst_count }}"><br>
+                <label for="save_folder">O escribir nueva carpeta:</label>
+                <input type="text" name="save_folder" value=""><br>
+            </fieldset>
 
-            <label for="interval_between_bursts">Tiempo entre intervalos (segundos):</label>
-            <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
+            <!-- 📅 Modo Captura Automática por Intervalos -->
+            <fieldset>
+                <legend>📅 Captura por Intervalos</legend>
 
-            <label for="burst_interval">Tiempo entre fotos en ráfaga (segundos):</label>
-            <input type="number" name="burst_interval" min="1" value="{{ config.burst_interval }}"><br>
+                <label>
+                    <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>
+                    Captura automática habilitada
+                </label><br>
 
-            <label for="folder_select">Elegir carpeta existente:</label>
-            <select name="folder_select">
-                <option value="">-- Ninguna --</option>
-                {% for folder in folders %}
-                    <option value="{{ folder }}" {% if folder == config.save_folder %}selected{% endif %}>{{ folder }}</option>
-                {% endfor %}
-            </select><br>
+                <label for="max_intervals">Número de intervalos:</label>
+                <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
 
-            <label for="save_folder">O escribir nueva carpeta:</label>
-            <input type="text" name="save_folder" value=""><br>
+                <label for="interval_between_bursts">Tiempo entre intervalos (segundos):</label>
+                <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
+            </fieldset>
 
-            <label>
-                <input type="checkbox" name="enabled" {% if config.enabled %}checked{% endif %}>
-                Captura automática habilitada
-            </label><br>
+            <!-- 🔁 Modo Ráfaga Avanzado -->
+            <fieldset>
+                <legend>🔁 Captura en Ráfaga</legend>
 
-            <label>
-                <input type="checkbox" name="led_auto" {% if config.led_auto %}checked{% endif %}>
-                Control automático del LED
-            </label><br>
+                <label for="burst_mode_enabled">
+                    <input type="checkbox" name="burst_mode_enabled" {% if config.burst_mode_enabled %}checked{% endif %}>
+                    Usar modo ráfaga avanzada
+                </label><br>
 
-            <label>
-                <input type="checkbox" name="led_enabled" {% if config.get('led_enabled', True) %}checked{% endif %}>
-                El LED debe estar encendido durante captura
-            </label><br>
+                <label for="burst_count">Número de fotos por intervalo:</label>
+                <input type="number" name="burst_count" min="0" value="{{ config.burst_count }}"><br>
 
-            <br><br>
+                <label for="burst_interval">Tiempo entre fotos en ráfaga (segundos):</label>
+                <input type="number" name="burst_interval" min="1" value="{{ config.burst_interval }}"><br>
+            </fieldset>
+
+            <!-- 💡 LED -->
+            <fieldset>
+                <legend>💡 Configuración del LED</legend>
+
+                <label>
+                    <input type="checkbox" name="led_auto" {% if config.led_auto %}checked{% endif %}>
+                    Control automático del LED
+                </label><br>
+
+                <label>
+                    <input type="checkbox" name="led_enabled" {% if config.get('led_enabled', True) %}checked{% endif %}>
+                    El LED debe estar encendido durante captura
+                </label><br>
+            </fieldset>
+
+            <br>
             <button class="button" type="submit">💾 Guardar Configuración</button>
         </form>
+
 
         <div class="led-switch-container">
             <form method="POST" action="{{ url_for('toggle_usb') }}" id="led-switch-form">
