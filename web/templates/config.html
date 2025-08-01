@@ -40,12 +40,6 @@
 
                 <label for="max_photos">Número de fotos a tomar:</label>
                 <input type="number" name="max_photos" min="0" value="{{ config.max_photos }}"><br>
-
-                <label for="max_intervals">Número de intervalos:</label>
-                <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
-
-                <label for="interval_between_bursts">Tiempo entre intervalos (segundos):</label>
-                <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
             </fieldset>
 
             <fieldset>
@@ -61,6 +55,12 @@
 
                 <label for="burst_interval">Tiempo entre fotos en ráfaga (segundos):</label>
                 <input type="number" name="burst_interval" min="1" value="{{ config.burst_interval }}"><br>
+
+                <label for="max_intervals">Número de intervalos:</label>
+                <input type="number" name="max_intervals" min="0" value="{{ config.max_intervals }}"><br>
+
+                <label for="interval_between_bursts">Tiempo entre intervalos (segundos):</label>
+                <input type="number" name="interval_between_bursts" min="1" value="{{ config.interval_between_bursts }}"><br>
             </fieldset>
 
             <fieldset>
