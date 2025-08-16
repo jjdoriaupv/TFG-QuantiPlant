@@ -19,7 +19,7 @@ def loop():
 
         if enabled and not session_active:
             session_active = True
-            photos_taken = 0
+            photos_taken = -1
             next_due = time.monotonic()
             last_burst_time = 0.0
             burst_intervals_done = 0
