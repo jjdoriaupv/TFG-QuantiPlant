@@ -22,11 +22,11 @@ def loop():
             session_active = True
             last_burst_time = 0.0
             burst_intervals_done = 0
-            next_due = time.monotonic()
+            next_due = 0.0
             with _state_lock:
-                config = get_config()
-                config['photos_taken'] = 0
-                save_config(config)
+                cfg = get_config()
+                cfg['photos_taken'] = 0
+                save_config(cfg)
 
         if enabled:
             with _state_lock:
@@ -49,29 +49,27 @@ def loop():
                     last_burst_time = time.monotonic()
                 elif burst_intervals_done >= max_intervals:
                     with _state_lock:
-                        config = get_config()
-                        config['enabled'] = False
-                        save_config(config)
+                        cfg = get_config()
+                        cfg['enabled'] = False
+                        save_config(cfg)
                 else:
                     time.sleep(0.5)
             else:
                 max_photos = config.get('max_photos', 0)
-                interval_min = config.get('interval', 10)
-                interval_sec = max(1, int(interval_min * 60))
+                interval_sec = max(1, int(config.get('interval', 10)))
                 led_auto = config.get('led_auto', True)
                 led_enabled = config.get('led_enabled', True)
                 burst_mode = not led_enabled and not led_auto
+                now = time.monotonic()
 
                 if max_photos == 0:
-                    now = time.monotonic()
                     if next_due is None or now >= next_due:
                         take_photo()
                         next_due = now + interval_sec
                     else:
                         time.sleep(min(1.0, max(0.0, next_due - now)))
                 elif burst_mode:
-                    now = time.monotonic()
-                    if next_due is None or now - last_burst_time >= interval_sec:
+                    if last_burst_time == 0.0 or now - last_burst_time >= interval_sec:
                         exposure = config.get('exposure', 1000000)
                         delay = (exposure / 1_000_000.0) + 5.0
                         for _ in range(max_photos):
@@ -79,27 +77,33 @@ def loop():
                             time.sleep(delay)
                         last_burst_time = time.monotonic()
                         with _state_lock:
-                            config = get_config()
-                            config['enabled'] = False
-                            save_config(config)
+                            cfg = get_config()
+                            cfg['enabled'] = False
+                            save_config(cfg)
                     else:
                         time.sleep(0.5)
                 else:
-                    now = time.monotonic()
+                    with _state_lock:
+                        photos_taken = get_config().get('photos_taken', 0)
+                    if photos_taken >= max_photos:
+                        with _state_lock:
+                            cfg = get_config()
+                            cfg['enabled'] = False
+                            save_config(cfg)
+                        continue
                     if next_due is None:
-                        next_due = now
+                        next_due = 0.0
                     if now >= next_due:
                         take_photo()
                         with _state_lock:
-                            config = get_config()
-                            photos_taken = config.get('photos_taken', 0) + 1
-                            config['photos_taken'] = photos_taken
-                            save_config(config)
-                        if photos_taken >= max_photos:
+                            cfg = get_config()
+                            cfg['photos_taken'] = cfg.get('photos_taken', 0) + 1
+                            save_config(cfg)
+                        if cfg['photos_taken'] >= max_photos:
                             with _state_lock:
-                                config = get_config()
-                                config['enabled'] = False
-                                save_config(config)
+                                cfg = get_config()
+                                cfg['enabled'] = False
+                                save_config(cfg)
                         else:
                             next_due = now + interval_sec
                     else:
