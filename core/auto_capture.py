@@ -10,9 +10,16 @@ def loop():
 
     while True:
         config = get_config()
+        enabled = config.get('enabled', False)
 
-        if config.get('enabled', False):
+        if enabled and not session_active:
             session_active = True
+            config['photos_taken'] = 0
+            last_burst_time = 0
+            burst_intervals_done = 0
+            save_config(config)
+
+        if enabled:
             burst_mode_enabled = config.get('burst_mode_enabled', False)
 
             if burst_mode_enabled:
@@ -34,18 +41,19 @@ def loop():
                     save_config(config)
             else:
                 max_photos = config.get('max_photos', 0)
-                interval = config.get('interval', 10)
+                interval_min = config.get('interval', 10)
+                interval_sec = max(1, int(interval_min * 60))
                 led_auto = config.get('led_auto', True)
                 led_enabled = config.get('led_enabled', True)
                 burst_mode = not led_enabled and not led_auto
 
                 if max_photos == 0:
                     take_photo()
-                    time.sleep(interval)
+                    time.sleep(interval_sec)
 
                 elif burst_mode:
                     now = time.time()
-                    if now - last_burst_time >= interval:
+                    if now - last_burst_time >= interval_sec:
                         exposure = config.get('exposure', 1000000)
                         delay = (exposure / 1_000_000.0) + 5.0
                         for i in range(max_photos):
@@ -62,14 +70,12 @@ def loop():
                         take_photo()
                         config['photos_taken'] = photos_taken + 1
                         save_config(config)
-                        time.sleep(interval)
+                        time.sleep(interval_sec)
                     else:
                         config['enabled'] = False
                         save_config(config)
         else:
             if session_active:
-                config['photos_taken'] = 0
-                save_config(config)
                 session_active = False
                 last_burst_time = 0
                 burst_intervals_done = 0

@@ -19,7 +19,6 @@ def take_photo(path=None):
 
         exposure = config.get('exposure', 1000)
         led_auto = config.get('led_auto', False)
-        led_enabled = config.get('led_enabled', True)
         shutter_time = str(exposure)
 
         if led_auto:
@@ -37,10 +36,15 @@ def take_photo(path=None):
         final_filepath = os.path.join(path, final_filename)
 
         try:
-            proc = subprocess.Popen(
-                ["rpicam-still", "--shutter", shutter_time, "--gain", "1","--awb", "auto", "1,1",
-                 "--nopreview", "--encoding", "png", "-o", final_filepath]
-            )
+            args = [
+                "rpicam-still",
+                "--shutter", shutter_time,
+                "--awb", "auto",
+                "--nopreview",
+                "--encoding", "png",
+                "-o", final_filepath
+            ]
+            proc = subprocess.Popen(args)
             proc.wait()
             return final_filename
         except:
@@ -55,6 +59,5 @@ def take_photo(path=None):
                     )
                 except:
                     pass
-
 
 
