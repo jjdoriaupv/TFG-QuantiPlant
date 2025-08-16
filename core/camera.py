@@ -38,7 +38,7 @@ def take_photo(path=None):
 
         try:
             proc = subprocess.Popen(
-                ["rpicam-still", "--shutter", shutter_time, "--gain", "1", "--awbgains", "1,1",
+                ["rpicam-still", "--shutter", shutter_time, "--gain", "1","--awb", "auto", "1,1",
                  "--nopreview", "--encoding", "png", "-o", final_filepath]
             )
             proc.wait()
