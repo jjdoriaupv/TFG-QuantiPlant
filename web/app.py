@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, send_file, jsonify
 import shutil
 from core.camera import take_photo
 from core.config_state import get_config, set_config
@@ -31,9 +31,24 @@ def is_usb_bound():
     path = "/sys/bus/usb/drivers/usb/1-1"
     return os.path.exists(path)
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    cfg = get_config()
+    return render_template(
+        "index.html",
+        auto_enabled=cfg.get("enabled", False),
+        remaining_photos=cfg.get("remaining_photos"),
+        next_shot_epoch=cfg.get("next_shot_epoch")
+    )
+
+@app.route("/status.json")
+def status_json():
+    cfg = get_config()
+    return jsonify({
+        "enabled": bool(cfg.get("enabled", False)),
+        "remaining_photos": cfg.get("remaining_photos"),
+        "next_shot_epoch": cfg.get("next_shot_epoch")
+    })
 
 @app.route('/crear_carpeta', methods=['POST'])
 def crear_carpeta():
@@ -200,25 +215,6 @@ def descargar_carpeta(folder):
 
     nombre_zip = f"{folder.replace('/', '_')}.zip"
     return send_file(memoria_zip, mimetype='application/zip', as_attachment=True, download_name=nombre_zip)
-
-@app.route("/")
-def index():
-    cfg = get_config()
-    return render_template(
-        "index.html",
-        auto_enabled=cfg.get("enabled", False),
-        remaining_photos=cfg.get("remaining_photos"),
-        next_shot_epoch=cfg.get("next_shot_epoch")
-    )
-
-@app.route("/status.json")
-def status_json():
-    cfg = get_config()
-    return jsonify({
-        "enabled": bool(cfg.get("enabled", False)),
-        "remaining_photos": cfg.get("remaining_photos"),
-        "next_shot_epoch": cfg.get("next_shot_epoch")
-    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
