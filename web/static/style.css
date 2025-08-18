@@ -216,3 +216,41 @@ legend {
     padding: 0 10px;
     font-size: 1.1em;
 }
+
+.status {
+    margin: 15px 0;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.status.running {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status.stopped {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.stats {
+    margin: 10px 0 20px 0;
+    padding: 10px 15px;
+    background-color: #f1f3f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.stats div {
+    margin-bottom: 6px;
+}
+
+.stats strong {
+    color: #000;
+}

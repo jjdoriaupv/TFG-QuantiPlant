@@ -9,6 +9,16 @@
     <div class="container">
         <h1>QuantiPlant - Panel de Control</h1>
 
+        {% if auto_enabled %}
+            <div class="status running">🔄 Captura automática en curso</div>
+            <div class="stats">
+                <div>Fotos restantes: <strong>{{ remaining_photos if remaining_photos is not none else "—" }}</strong></div>
+                <div>Próximo disparo: <strong id="next-shot" data-epoch="{{ next_shot_epoch if next_shot_epoch is not none else '' }}">{{ next_shot_epoch if next_shot_epoch is not none else "—" }}</strong></div>
+            </div>
+        {% else %}
+            <div class="status stopped">⏹️ Captura automática detenida</div>
+        {% endif %}
+
         <form method="POST" action="{{ url_for('foto') }}">
             <input type="hidden" name="carpeta" value="default">
             <button class="button" type="submit">📸 Tomar Foto</button>
@@ -16,5 +26,18 @@
             <a class="button" href="{{ url_for('config') }}">⚙️ Configurar Cámara</a>
         </form>
     </div>
+
+    <script>
+        (function () {
+            var el = document.getElementById('next-shot');
+            if (!el) return;
+            var epoch = el.getAttribute('data-epoch');
+            if (!epoch) return;
+            var ms = parseFloat(epoch) * 1000;
+            if (isNaN(ms)) return;
+            var d = new Date(ms);
+            el.textContent = d.toLocaleString();
+        })();
+    </script>
 </body>
 </html>
