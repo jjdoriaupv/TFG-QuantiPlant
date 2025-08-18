@@ -201,5 +201,24 @@ def descargar_carpeta(folder):
     nombre_zip = f"{folder.replace('/', '_')}.zip"
     return send_file(memoria_zip, mimetype='application/zip', as_attachment=True, download_name=nombre_zip)
 
+@app.route("/")
+def index():
+    cfg = get_config()
+    return render_template(
+        "index.html",
+        auto_enabled=cfg.get("enabled", False),
+        remaining_photos=cfg.get("remaining_photos"),
+        next_shot_epoch=cfg.get("next_shot_epoch")
+    )
+
+@app.route("/status.json")
+def status_json():
+    cfg = get_config()
+    return jsonify({
+        "enabled": bool(cfg.get("enabled", False)),
+        "remaining_photos": cfg.get("remaining_photos"),
+        "next_shot_epoch": cfg.get("next_shot_epoch")
+    })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
